@@ -1,0 +1,1 @@
+scc.o: ../scc.cpp

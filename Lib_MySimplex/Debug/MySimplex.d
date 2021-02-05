@@ -1,0 +1,1 @@
+MySimplex.o: ../MySimplex.cpp

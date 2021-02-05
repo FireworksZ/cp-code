@@ -1,0 +1,1 @@
+KMP.o: ../KMP.cpp

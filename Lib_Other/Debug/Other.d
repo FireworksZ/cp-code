@@ -1,0 +1,1 @@
+Other.o: ../Other.cpp

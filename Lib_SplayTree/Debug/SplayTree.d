@@ -1,0 +1,1 @@
+SplayTree.o: ../SplayTree.cpp

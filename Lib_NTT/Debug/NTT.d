@@ -1,0 +1,1 @@
+NTT.o: ../NTT.cpp

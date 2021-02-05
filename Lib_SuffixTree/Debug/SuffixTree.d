@@ -1,0 +1,1 @@
+SuffixTree.o: ../SuffixTree.cpp

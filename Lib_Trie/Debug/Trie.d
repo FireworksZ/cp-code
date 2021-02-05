@@ -1,0 +1,1 @@
+Trie.o: ../Trie.cpp

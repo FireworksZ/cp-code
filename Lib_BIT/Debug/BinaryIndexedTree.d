@@ -1,0 +1,1 @@
+BinaryIndexedTree.o: ../BinaryIndexedTree.cpp
