@@ -1,0 +1,40 @@
+#=#=#=# Syncrun started 2021-02-02T12:52:46Z
+#=#=#=#=# Propagation starts 2021-02-02T12:52:46Z (last step: 429 msec, total: 429 msec)
+12:52:48||.metadata|8|1|1612269950||4096|00007979ocgnjtzsrn61|4||201|0|0|2aced5df-662b-4afc-bbf4-3d76465019d7|
+12:52:48||1|8|1|1612269952||4096|00007980ocgnjtzsrn61|1|Error writing metadata to the database|201|0|0|0b360e96-6be5-4412-b48b-93034ac87b2a|
+||.metadata/.mylyn|8|1|1612269950||0||1|Operation canceled|0|0|0|f7db0b8b-66a2-428f-b45a-149d4faaefdd|
+||Lib_|8|1|1612269952||0||1|Operation canceled|0|0|0|e24d11df-36c5-47ed-95d9-b690d85e2491|
+||Lib_2|8|1|1612269952||0||1|Operation canceled|0|0|0|98182b36-4127-432f-8ab2-ad6bb65adc3f|
+||Lib_AC|8|1|1612269952||4096||1|Operation canceled|0|0|0|cbf601c1-f407-4e22-a1dd-4bf0a08fb8e6|
+||Lib_ArticulationPoint&Bridge|8|1|1612269952||4096||1|Operation canceled|0|0|0|b3a2bccf-0d48-438e-98f5-056647bfb526|
+||.metadata/.plugins|8|1|1612269952||12288||1|Operation canceled|0|0|0|09fd6c94-7dc1-4c71-8ad0-aca6d8ec9f84|
+#=#=#=# Syncrun finished 2021-02-02T12:52:47Z (last step: 735 msec, total: 1165 msec)
+#=#=#=# Syncrun started 2021-02-02T12:52:49Z
+#=#=#=#=# Propagation starts 2021-02-02T12:52:49Z (last step: 567 msec, total: 567 msec)
+12:52:51||.metadata/.plugins|8|1|1612269952||12288|00007985ocgnjtzsrn61|4||201|0|0|4d891060-575c-443f-9ce7-85e2ec900767|
+12:52:51||.metadata/.mylyn|8|1|1612269950||0|00007988ocgnjtzsrn61|4||201|0|0|7196969e-f306-48f0-aafd-fc10a048d40c|
+12:52:51||.metadata/.lock|8|1|1601527421|9b0e2eb4c4cbed5a26d96e65c17608a0|0|00007987ocgnjtzsrn61|1|Error writing metadata to the database|201|0|0|d633be2a-044d-4a6a-8c23-870b0db3ba58|
+||.metadata/.mylyn/contexts|8|1|1612259262||0||1|Operation canceled|0|0|0|a1ceef09-6972-4e4b-9685-0b9b82d66234|
+||1/.settings|8|1|1612269952||0||1|Operation canceled|0|0|0|49b5e676-048a-4f79-b8d9-c4cd71a89dd0|
+||.metadata/.plugins/org.eclipse.cdt.codan.ui|8|1|1612269950||0||1|Operation canceled|0|0|0|51e312f7-5359-44b0-8221-ecfe1c356bf2|
+#=#=#=# Syncrun finished 2021-02-02T12:52:51Z (last step: 1167 msec, total: 1735 msec)
+#=#=#=# Syncrun started 2021-02-02T12:53:04Z
+#=#=#=#=# Propagation starts 2021-02-02T12:53:05Z (last step: 802 msec, total: 802 msec)
+12:53:06||.metadata/.plugins/org.eclipse.cdt.flatpak.launcher|8|1|1612259262||0|00008002ocgnjtzsrn61|4||201|0|0|0e36bcb1-0332-4fdb-b00a-6c1390d14101|
+12:53:06||.metadata/.plugins/org.eclipse.cdt.core|8|1|1612269951||65536|00008003ocgnjtzsrn61|4||201|0|0|85b77d65-9f54-43ff-a9f2-df358339893f|
+12:53:07||.metadata/.plugins/org.eclipse.cdt.make.core|8|1|1612269951||0|00008006ocgnjtzsrn61|4||201|0|0|5c105940-8647-4186-8cc5-363628f9d8b9|
+12:53:07||.metadata/.plugins/org.eclipse.cdt.ui|8|1|1612269951||24576|00008010ocgnjtzsrn61|4||201|0|0|a6fe9e66-9690-49ec-aa59-7e27f41123c3|
+12:53:07||.metadata/.plugins/org.eclipse.cdt.managedbuilder.core|8|1|1612269951||0|00008011ocgnjtzsrn61|4||201|0|0|47e0bee0-29db-4cfc-aa0a-28309b9ea226|
+12:53:07||.metadata/.plugins/org.eclipse.core.resources|8|1|1612270297||4096|00008012ocgnjtzsrn61|4||201|0|0|4942ea11-6841-44dd-ac3f-3d0978b06c61|
+12:53:07||.metadata/.plugins/org.eclipse.cdt.codan.ui/dialog_settings.xml|8|1|1607795435|8cce0b59c90a3b3ce31090f3e8f4a8a7|181|00008009ocgnjtzsrn61|4||201|0|0|295618d1-cab0-40fc-82c8-d697556ac4ff|
+12:53:07||.metadata/.plugins/org.eclipse.cdt.core/.log|8|1|1612251473|2d8a71478ba3b4e2ed40abc4e99e8a4c|5822|00008016ocgnjtzsrn61|1|Error writing metadata to the database|201|0|0|4aaddda1-e35e-40c6-b50e-c00a6274cbff|
+12:53:08||.metadata/.plugins/org.eclipse.cdt.core/Lib_.language.settings.xml|8|1|1601528965|5b2cf3b7c8d42947ac433f57d23f4156|187960|00008025ocgnjtzsrn61|4||201|0|0|a2b36300-28d9-46fc-9c82-f8a0d94ecb1e|
+12:53:07||.metadata/.plugins/org.eclipse.cdt.core/1.language.settings.xml|8|1|1612269998|94ef397ba4e9084f5d2d1bfd9f199749|155777|00008019ocgnjtzsrn61|4||201|0|0|e1a54232-c933-48ee-8ee1-dfb3084b216b|
+12:53:07||.metadata/.plugins/org.eclipse.cdt.core/Lib_.1601528965333.pdom|8|1|1601528965|b2acadd47671b99f4f9096ddc29d055f|8192|00008022ocgnjtzsrn61|4||201|0|0|ee7daea2-9c30-4f7b-8b12-0a69a1313e2c|
+12:53:08||.metadata/.plugins/org.eclipse.cdt.core/Lib_AC.language.settings.xml|8|1|1609349533|4bcd4c12be62b243d7528e5f542a84b0|159556|00008028ocgnjtzsrn61|4||201|0|0|7117a6c4-d60f-4559-8f0d-bc78c6bb6f08|
+12:53:08||.metadata/.plugins/org.eclipse.cdt.core/Lib_2.language.settings.xml|8|1|1601529054|8b09cce07134bbc1ac3f7056e5d707ef|187960|00008031ocgnjtzsrn61|4||201|0|0|2b0e6ac6-71e1-4def-8bac-c9e712584b4f|
+12:53:08||.metadata/.plugins/org.eclipse.cdt.core/Lib_AC2.language.settings.xml|8|1|1601528899|a4310b17c167b5ed9075197f840a4c86|187960|00008034ocgnjtzsrn61|4||201|0|0|48305d5b-ee9f-49eb-8483-8ebc545feddd|
+12:53:09||.metadata/.plugins/org.eclipse.cdt.core/Lib_ArticulationPoint&Bridge.language.settings.xml|8|1|1601528919|2320d2cf6bd1c2c2a5aff9538543eaf3|187960|00008037ocgnjtzsrn61|4||201|0|0|90f5da63-1e0d-4ae7-8ae3-476313d86b03|
+12:53:10||.metadata/.plugins/org.eclipse.cdt.core/Lib_AC.1601528868202.pdom|8|1|1609349568|4d2afccc73f11c449707e64a847ad54b|3932160|00008040ocgnjtzsrn61|4||201|0|0|84be6ab0-d960-4772-b1bb-c4ac281973a4|
+12:53:11||.metadata/.plugins/org.eclipse.cdt.core/Lib_BIT.language.settings.xml|8|1|1608296102|7b19f89a0f0d3bf6f299c94d4cac89bc|159556|00008043ocgnjtzsrn61|4||201|0|0|c505c798-4111-4f75-bda7-595b432e373d|
+#=#=#=# Syncrun finished 2021-02-02T12:53:12Z (last step: 6731 msec, total: 7534 msec)

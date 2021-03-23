@@ -1,0 +1,15 @@
+13:35:47 **** Build of configuration Debug for project Lib_SegmentTree_LimitValueInARange ****
+make all 
+Building file: ../test.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"test.d" -MT"test.o" -o "test.o" "../test.cpp"
+Finished building: ../test.cpp
+ 
+Building target: Lib_SegmentTree_LimitValueInARange.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_SegmentTree_LimitValueInARange.exe"  ./test.o   
+Finished building target: Lib_SegmentTree_LimitValueInARange.exe
+ 
+
+13:35:50 Build Finished. 0 errors, 0 warnings. (took 2s.426ms)
+

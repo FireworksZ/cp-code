@@ -1,0 +1,15 @@
+13:35:19 **** Build of configuration Debug for project Lib_MCBM ****
+make all 
+Building file: ../MCBM.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"MCBM.d" -MT"MCBM.o" -o "MCBM.o" "../MCBM.cpp"
+Finished building: ../MCBM.cpp
+ 
+Building target: Lib_MCBM.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_MCBM.exe"  ./MCBM.o   
+Finished building target: Lib_MCBM.exe
+ 
+
+13:35:22 Build Finished. 0 errors, 0 warnings. (took 2s.524ms)
+

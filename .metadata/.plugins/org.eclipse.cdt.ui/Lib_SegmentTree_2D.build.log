@@ -1,0 +1,15 @@
+13:35:45 **** Build of configuration Debug for project Lib_SegmentTree_2D ****
+make all 
+Building file: ../SegmentTree_2D.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"SegmentTree_2D.d" -MT"SegmentTree_2D.o" -o "SegmentTree_2D.o" "../SegmentTree_2D.cpp"
+Finished building: ../SegmentTree_2D.cpp
+ 
+Building target: Lib_SegmentTree_2D.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_SegmentTree_2D.exe"  ./SegmentTree_2D.o   
+Finished building target: Lib_SegmentTree_2D.exe
+ 
+
+13:35:47 Build Finished. 0 errors, 0 warnings. (took 2s.327ms)
+

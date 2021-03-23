@@ -1,0 +1,93 @@
+#include<bits/stdc++.h>
+
+
+using namespace std;
+
+#define double long double
+
+typedef pair<int,int> ii;
+typedef pair<int,long long> il;
+typedef pair<long long,long long> ll;
+typedef pair<ll,int> lli;
+typedef pair<long long,int> li;
+typedef pair<double,double> dd;
+typedef pair<ii,int> iii;
+typedef pair<double,int> di;
+typedef pair<int,ii> iii2;
+typedef pair<ii,ii> iiii;
+
+const long long mod = 1000000007LL;
+const long long large = 2000000000000000000LL;
+
+typedef unsigned long long ull;
+
+long long g[600][600],f[600][600];
+
+int u[360000],v[360000];
+long long w[360000];
+
+int main(){
+
+    ios::sync_with_stdio(false);
+
+//    freopen("input.txt","r",stdin);
+//    freopen("output.txt","w",stdout);
+
+    int n,m;
+    scanf("%d%d",&n,&m);
+
+    for(int i=0;i<m;i++){
+    	scanf("%d%d%lld",&u[i],&v[i],&w[i]);
+    	u[i]--;
+    	v[i]--;
+    }
+
+    for(int i=0;i<n;i++){
+    	for(int j=0;j<n;j++) g[i][j] = large,f[i][j] = 0;
+    	g[i][i] = 0;
+    }
+
+
+    for(int i=0;i<m;i++){
+    	if(w[i]<g[u[i]][v[i]]) {
+    		g[u[i]][v[i]] = g[v[i]][u[i]] = w[i];
+    	}
+    }
+    for(int k=0;k<n;k++){
+    	for(int i=0;i<n;i++){
+    		for(int j=0;j<n;j++){
+    			g[i][j] = min(g[i][j],g[i][k]+g[k][j]);
+    		}
+    	}
+    }
+
+
+    int q;
+    scanf("%d",&q);
+    for(int i=0;i<q;i++){
+    	int x,y;
+    	long long z;
+    	scanf("%d%d%lld",&x,&y,&z);
+    	x--;y--;
+    	f[x][y] = max(f[x][y],z);
+    	f[y][x] = max(f[y][x],z);
+    }
+    for(int k=0;k<n;k++) for(int i=0;i<n;i++) for(int j=0;j<n;j++)  {
+    	f[i][j] = max(f[i][j],f[i][k]-g[k][j]);
+    }
+    int cnt = 0;
+    for(int i=0;i<m;i++){
+    	for(int k=0;k<n;k++){
+    		if(g[u[i]][k]+w[i]<=f[k][v[i]]||g[v[i]][k]+w[i]<=f[k][u[i]]){
+    			cnt++;
+				break;
+    		}
+    	}
+    }
+
+    cout<<cnt<<endl;
+
+
+
+    return 0;
+}

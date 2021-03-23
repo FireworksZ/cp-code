@@ -1,0 +1,15 @@
+13:35:41 **** Build of configuration Debug for project Lib_PalindromeTree ****
+make all 
+Building file: ../PT.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"PT.d" -MT"PT.o" -o "PT.o" "../PT.cpp"
+Finished building: ../PT.cpp
+ 
+Building target: Lib_PalindromeTree.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_PalindromeTree.exe"  ./PT.o   
+Finished building target: Lib_PalindromeTree.exe
+ 
+
+13:35:43 Build Finished. 0 errors, 0 warnings. (took 2s.221ms)
+

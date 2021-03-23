@@ -1,0 +1,15 @@
+13:35:16 **** Build of configuration Debug for project Lib_LyndonFactorization ****
+make all 
+Building file: ../LyndonFactorization.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"LyndonFactorization.d" -MT"LyndonFactorization.o" -o "LyndonFactorization.o" "../LyndonFactorization.cpp"
+Finished building: ../LyndonFactorization.cpp
+ 
+Building target: Lib_LyndonFactorization.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_LyndonFactorization.exe"  ./LyndonFactorization.o   
+Finished building target: Lib_LyndonFactorization.exe
+ 
+
+13:35:19 Build Finished. 0 errors, 0 warnings. (took 3s.85ms)
+

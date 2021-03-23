@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Lib_Heap&apos; to &apos;Lib_Heap(TODO)&apos;" description="Rename resource &apos;Lib_Heap&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/Lib_Heap" name="Lib_Heap(TODO)" stamp="1605679917128" updateReferences="true"/>
+</session>

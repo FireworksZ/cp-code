@@ -1,0 +1,15 @@
+13:35:22 **** Build of configuration Debug for project Lib_Manacher ****
+make all 
+Building file: ../Manacher.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"Manacher.d" -MT"Manacher.o" -o "Manacher.o" "../Manacher.cpp"
+Finished building: ../Manacher.cpp
+ 
+Building target: Lib_Manacher.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_Manacher.exe"  ./Manacher.o   
+Finished building target: Lib_Manacher.exe
+ 
+
+13:35:24 Build Finished. 0 errors, 0 warnings. (took 2s.66ms)
+

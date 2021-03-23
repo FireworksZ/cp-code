@@ -1,0 +1,15 @@
+13:35:43 **** Build of configuration Debug for project Lib_SCC ****
+make all 
+Building file: ../scc.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"scc.d" -MT"scc.o" -o "scc.o" "../scc.cpp"
+Finished building: ../scc.cpp
+ 
+Building target: Lib_SCC.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_SCC.exe"  ./scc.o   
+Finished building target: Lib_SCC.exe
+ 
+
+13:35:45 Build Finished. 0 errors, 0 warnings. (took 2s.221ms)
+

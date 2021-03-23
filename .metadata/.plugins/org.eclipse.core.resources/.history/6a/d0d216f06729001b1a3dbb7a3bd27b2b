@@ -1,0 +1,124 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+//#define double long double
+
+typedef pair<int,int> ii;
+typedef pair<int,long long> il;
+typedef pair<long long,long long> ll;
+typedef pair<ll,int> lli;
+typedef pair<long long,int> li;
+typedef pair<double,double> dd;
+typedef pair<ii,int> iii;
+typedef pair<double,int> di;
+typedef pair<int,ii> iii2;
+typedef pair<ii,ii> iiii;
+
+long long mod = 1000000007LL;
+const long long large = 2000000000000000000LL;
+
+typedef unsigned long long ull;
+
+int n,m,k;
+
+vector<int> cnt;
+
+int main(){
+
+	ios::sync_with_stdio(false);
+
+//    freopen("input.txt","r",stdin);
+//    freopen("output.txt","w",stdout);
+
+	int t;
+	cin>>t;
+	while(t--){
+		cin>>n>>m>>k;
+
+		vector<vector<int> > adj(n,vector<int>());
+		vector<set<int> > ad(n,set<int>());
+		set<ii> ed;
+
+		for(int i=0;i<m;i++){
+			int x,y;
+			cin>>x>>y;
+			x--;y--;
+			adj[x].push_back(y);
+			ad[x].insert(y);
+			adj[y].push_back(x);
+			ad[y].insert(x);
+			ed.insert(ii(min(x,y),max(x,y)));
+		}
+
+		if(1LL*k*(k-1)>2LL*m){
+			cout<<"-1"<<endl;
+			continue;
+		}
+
+		set<ii> st;
+		cnt.assign(n,0);
+		vector<int> vis(n,1);
+		for(int i=0;i<n;i++) cnt[i] = adj[i].size();
+
+		for(int i=0;i<n;i++) st.insert(ii(cnt[i],i));
+
+		vector<int> find;
+		while(st.size()>0){
+//			cout<<(int)h.size()<<"!"<<endl;
+			int u = st.begin()->second;
+			if(cnt[u]<k){
+				if(cnt[u]==k-1){
+					vector<int> con(1,u);
+					for(int j=0;j<(int)adj[u].size();j++){
+						int v = adj[u][j];
+						if(!vis[v]) continue;
+						con.push_back(v);
+					}
+					int can = 1;
+					for(int i=0;i<(int)con.size();i++){
+						int u = con[i];
+						for(int j=i+1;j<(int)con.size();j++){
+							int v = con[j];
+							if(!ad[u].count(v)) can = 0;
+						}
+					}
+					if(can){
+						find = con;
+						break;
+					}
+				}
+				st.erase(st.begin());
+				vis[u] = 0;
+				for(int j=0;j<(int)adj[u].size();j++){
+					int v = adj[u][j];
+					if(!vis[v]) continue;
+					st.erase(ii(cnt[v],v));
+					cnt[v]--;
+					st.insert(ii(cnt[v],v));
+				}
+			}else break;
+		}
+		if(find.size()){
+			cout<<2<<endl;
+			for(int i=0;i<(int)find.size();i++){
+				cout<<find[i]+1<<" ";
+			}
+			cout<<endl;
+		}else if(st.size()&&(st.begin()->first)>=k){
+			cout<<1<<" "<<st.size()<<endl;
+			while(st.size()){
+				cout<<st.begin()->second+1<<" ";
+				st.erase(st.begin());
+			}
+			cout<<endl;
+
+		}else cout<<-1<<endl;
+
+
+	}
+
+
+
+    return 0;
+}

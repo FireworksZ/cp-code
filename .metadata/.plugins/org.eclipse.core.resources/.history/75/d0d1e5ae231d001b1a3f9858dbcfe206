@@ -1,0 +1,88 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+//#define double long double
+
+typedef pair<int,int> ii;
+typedef pair<int,long long> il;
+typedef pair<long long,long long> ll;
+typedef pair<ll,int> lli;
+typedef pair<long long,int> li;
+typedef pair<double,double> dd;
+typedef pair<ii,int> iii;
+typedef pair<double,int> di;
+typedef pair<int,ii> iii2;
+typedef pair<ii,ii> iiii;
+
+long long mod = 1000000007LL;
+long long large = 2000000000000000000LL;
+
+typedef unsigned long long ull;
+
+vector<ii> maxi,mini,addv;
+
+int ul,ur,uv;
+void update(int o,int l,int r){
+	if(ul<=l&&ur>=r){
+		maxi[o].first+=uv;
+		mini[o].first+=uv;
+		addv[o]+=uv;
+	}else{
+		int m = (l+r)/2;
+		if(ul<=m) update(o*2,l,m);
+		if(ur>m) update(o*2+1,m+1,r);
+		maxi[o] = max(maxi[o*2],maxi[o*2+1]);
+		maxi[o].first+=addv[o];
+		mini[o] = min(mini[o*2],mini[o*2+1]);
+		mini[o].first+=addv[o];
+	}
+}
+
+int ql,qr;
+ii qv;
+void query(int o,int l,int r){
+	if(ql<=l&&qr>=r){
+		qv = min(qv,mini[o]);
+	}else{
+		int m = (l+r)/2;
+		if(ql<=m) query(o*2,l,m);
+		if(qr>m) query(o*2+1,m+1,r);
+	}
+}
+
+int main(){
+
+	ios::sync_with_stdio(false);
+
+//    freopen("input.txt","r",stdin);
+//    freopen("output.txt","w",stdout);
+
+	int t;
+	cin>>t;
+	while(t--){
+		int n;
+		cin>>n;
+		vector<int> a;
+		for(int i=0;i<n;i++){
+			int x;
+			cin>>x;
+			if(a.empty()||a.back()!=x) a.push_back(x);
+		}
+		n = (int)a.size();
+		int l = 1;
+		while(l<n&&a[l]<a[l-1]) l++;
+		int r = n-2;
+		while(r>=0&&a[r]<a[r+1]) r--;
+		if(l>r){
+			cout<<"YES"<<endl;
+			continue;
+		}
+		if(a[l-1]+a[r+1]>=a[l])cout<<"YES"<<endl;
+		else cout<<"NO"<<endl;
+
+	}
+
+
+    return 0;
+}

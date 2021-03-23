@@ -1,0 +1,118 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+//#define double long double
+
+typedef pair<int,int> ii;
+typedef pair<int,long long> il;
+typedef pair<long long,long long> ll;
+typedef pair<ll,int> lli;
+typedef pair<long long,int> li;
+typedef pair<double,double> dd;
+typedef pair<ii,int> iii;
+typedef pair<double,int> di;
+typedef pair<int,ii> iii2;
+typedef pair<ii,ii> iiii;
+
+long long mod = 1000000007LL;
+long long large = 2000000000000000000LL;
+
+typedef unsigned long long ull;
+
+
+bool partition(vector<int> a,vector<int>& b){
+	int c = 0;
+	int n = (int)a.size();
+	for(int i=0;i<n;i++) c+=a[i];
+	if(c%2) return false;
+	int h = c/2;
+	vector<vector<int> > dp(n+1,vector<int>(h+1,0));
+	dp[0][0] = 1;
+	for(int i=1;i<=n;i++){
+		int v = a[i-1];
+		for(int j=0;j<=h;j++){
+			dp[i][j]|=dp[i-1][j];
+			if(j>=v) dp[i][j]|=dp[i-1][j-v];
+		}
+	}
+	if(dp[n][h]==0) return false;
+
+	b.assign(n,-1);
+	int ch = h;
+	for(int i=n-1;i>=0;i--){
+		if(dp[i][ch]){
+			b[i] = 0;
+		}else{
+			b[i] = 1;
+			ch-=a[i];
+		}
+	}
+
+
+}
+
+
+int main(){
+
+	ios::sync_with_stdio(false);
+
+//    freopen("input.txt","r",stdin);
+//    freopen("output.txt","w",stdout);
+
+
+	int test;
+	cin>>test;
+	while(test--){
+		int n,m;
+		cin>>n;
+		vector<int> h(n,0);
+		for(int i=0;i<n;i++) cin>>h[i];
+		cin>>m;
+		vector<int> p(m,0);
+		for(int i=0;i<m;i++) cin>>p[i];
+		if(n!=m){
+			cout<<"No"<<endl;
+			continue;
+		}
+
+		vector<int> a,b;
+		if(!(partition(h,a)&&partition(p,b))) {
+			cout<<"No"<<endl;
+			continue;
+		}
+		vector<int> l,r,u,d;
+		for(int i=0;i<n;i++){
+			if(a[i]) l.push_back(h[i]);
+			else r.push_back(h[i]);
+			if(b[i]) u.push_back(p[i]);
+			else d.push_back(p[i]);
+		}
+		if(l.size()>r.size()) swap(l,r);
+
+		if(u.size()<d.size()) swap(u,d);
+
+		sort(l.begin(),l.end());
+		reverse(l.begin(),l.end());
+		sort(u.begin(),u.end());
+		sort(r.begin(),r.end());
+		sort(d.begin(),d.end());
+		reverse(d.begin(),d.end());
+
+
+		int x=0,y=0;
+		for(int i=0;i<(int)l.size();i++){
+			cout<<x<<" "<<y<<endl;
+			x+=l[i];
+			y+=u[i];
+		}
+		for(int i=(int)l.size();i<(int)u.size();i++){
+			cout<<x<<" "<<y<<endl;
+
+		}
+
+	}
+
+
+    return 0;
+}

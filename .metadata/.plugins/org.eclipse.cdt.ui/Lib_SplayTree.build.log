@@ -1,0 +1,15 @@
+13:35:53 **** Build of configuration Debug for project Lib_SplayTree ****
+make all 
+Building file: ../SplayTree.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"SplayTree.d" -MT"SplayTree.o" -o "SplayTree.o" "../SplayTree.cpp"
+Finished building: ../SplayTree.cpp
+ 
+Building target: Lib_SplayTree.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_SplayTree.exe"  ./SplayTree.o   
+Finished building target: Lib_SplayTree.exe
+ 
+
+13:35:56 Build Finished. 0 errors, 0 warnings. (took 2s.833ms)
+

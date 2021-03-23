@@ -1,0 +1,15 @@
+13:35:27 **** Build of configuration Debug for project Lib_Maxflow_Dinic ****
+make all 
+Building file: ../Dinic.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"Dinic.d" -MT"Dinic.o" -o "Dinic.o" "../Dinic.cpp"
+Finished building: ../Dinic.cpp
+ 
+Building target: Lib_Maxflow_Dinic.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_Maxflow_Dinic.exe"  ./Dinic.o   
+Finished building target: Lib_Maxflow_Dinic.exe
+ 
+
+13:35:29 Build Finished. 0 errors, 0 warnings. (took 2s.177ms)
+

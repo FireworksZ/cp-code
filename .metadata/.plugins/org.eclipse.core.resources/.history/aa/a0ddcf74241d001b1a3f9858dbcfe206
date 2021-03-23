@@ -1,0 +1,114 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+//#define double long double
+
+typedef pair<int,int> ii;
+typedef pair<int,long long> il;
+typedef pair<long long,long long> ll;
+typedef pair<ll,int> lli;
+typedef pair<long long,int> li;
+typedef pair<double,double> dd;
+typedef pair<ii,int> iii;
+typedef pair<double,int> di;
+typedef pair<int,ii> iii2;
+typedef pair<ii,ii> iiii;
+
+long long mod = 1000000007LL;
+long long large = 2000000000000000000LL;
+
+typedef unsigned long long ull;
+
+vector<ii> maxi,mini;
+vector<int> addv;
+
+int ul,ur,uv;
+void update(int o,int l,int r){
+	if(ul<=l&&ur>=r){
+		maxi[o].first+=uv;
+		mini[o].first+=uv;
+		addv[o]+=uv;
+	}else{
+		int m = (l+r)/2;
+		if(ul<=m) update(o*2,l,m);
+		if(ur>m) update(o*2+1,m+1,r);
+		maxi[o] = max(maxi[o*2],maxi[o*2+1]);
+		maxi[o].first+=addv[o];
+		mini[o] = min(mini[o*2],mini[o*2+1]);
+		mini[o].first+=addv[o];
+	}
+}
+
+int ql,qr;
+ii qv;
+void query(int o,int l,int r){
+	if(qr<ql) return;
+	if(ql<=l&&qr>=r){
+		qv = min(qv,mini[o]);
+	}else{
+		int m = (l+r)/2;
+		if(ql<=m) query(o*2,l,m);
+		if(qr>m) query(o*2+1,m+1,r);
+	}
+}
+
+int main(){
+
+	ios::sync_with_stdio(false);
+
+//    freopen("input.txt","r",stdin);
+//    freopen("output.txt","w",stdout);
+
+	int t;
+	cin>>t;
+	while(t--){
+		int n;
+		cin>>n;
+		maxi.assign(4*n+10,ii(0,-1));
+		mini = maxi;
+		addv.assign(4*n+10,0);
+
+		for(int i=0;i<n;i++){
+			ul = ur = i;
+			cin>>uv;
+			update(1,0,n-1);
+		}
+
+		while(maxi[1].first>0){
+			int pos = maxi[1].second;
+			ql = 0;
+			qr = pos-1;
+			qv = ii(1000010,-1);
+			query(1,0,n-1);
+			ii le = qv;
+			ql = pos+1;
+			qr = n-1;
+			qv = ii(1000010,-1);
+			query(1,0,n-1);
+			ii ri = qv;
+			if(le>=ri){
+				if(le.first>0){
+					ul = 0;
+					ur = pos;
+					uv = -1;
+					update(1,0,n-1);
+				}else break;
+			}else{
+				if(ri.first>0){
+					ul = pos;
+					ur = n-1;
+					uv = -1;
+					update(1,0,n-1);
+				}else break;
+			}
+		}
+		if(maxi[1].first>0) cout<<"NO"<<endl;
+		else cout<<"YES"<<endl;
+
+
+	}
+
+
+    return 0;
+}

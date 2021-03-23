@@ -1,0 +1,15 @@
+13:35:29 **** Build of configuration Debug for project Lib_Maxflow_RelabelToFront ****
+make all 
+Building file: ../RelabelToFront.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"RelabelToFront.d" -MT"RelabelToFront.o" -o "RelabelToFront.o" "../RelabelToFront.cpp"
+Finished building: ../RelabelToFront.cpp
+ 
+Building target: Lib_Maxflow_RelabelToFront.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_Maxflow_RelabelToFront.exe"  ./RelabelToFront.o   
+Finished building target: Lib_Maxflow_RelabelToFront.exe
+ 
+
+13:35:31 Build Finished. 0 errors, 0 warnings. (took 2s.584ms)
+

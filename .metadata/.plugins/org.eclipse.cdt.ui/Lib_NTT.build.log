@@ -1,0 +1,15 @@
+13:35:36 **** Build of configuration Debug for project Lib_NTT ****
+make all 
+Building file: ../NTT.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"NTT.d" -MT"NTT.o" -o "NTT.o" "../NTT.cpp"
+Finished building: ../NTT.cpp
+ 
+Building target: Lib_NTT.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_NTT.exe"  ./NTT.o   
+Finished building target: Lib_NTT.exe
+ 
+
+13:35:39 Build Finished. 0 errors, 0 warnings. (took 2s.273ms)
+

@@ -1,0 +1,15 @@
+13:35:32 **** Build of configuration Debug for project Lib_MinCostMaxFlow ****
+make all 
+Building file: ../MCMF.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"MCMF.d" -MT"MCMF.o" -o "MCMF.o" "../MCMF.cpp"
+Finished building: ../MCMF.cpp
+ 
+Building target: Lib_MinCostMaxFlow.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_MinCostMaxFlow.exe"  ./MCMF.o   
+Finished building target: Lib_MinCostMaxFlow.exe
+ 
+
+13:35:34 Build Finished. 0 errors, 0 warnings. (took 2s.172ms)
+

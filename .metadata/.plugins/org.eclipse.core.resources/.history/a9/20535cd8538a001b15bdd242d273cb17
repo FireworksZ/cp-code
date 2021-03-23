@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+
+
+using namespace std;
+
+#define double long double
+
+typedef pair<int,int> ii;
+typedef pair<int,long long> il;
+typedef pair<long long,long long> ll;
+typedef pair<ll,int> lli;
+typedef pair<long long,int> li;
+typedef pair<double,double> dd;
+typedef pair<ii,int> iii;
+typedef pair<double,int> di;
+typedef pair<int,ii> iii2;
+typedef pair<ii,ii> iiii;
+
+const long long mod = 1000000007LL;
+const long long large = 2000000000000000000LL;
+
+typedef unsigned long long ull;
+
+
+vector<long long> maxi;
+
+int up;
+long long uv;
+void update(int o,int l,int r){
+	if(l==r){
+		maxi[o] = uv;
+	}else{
+		int m = (l+r)/2;
+		if(up<=m) update(o*2,l,m);
+		if(up>m) update(o*2+1,m+1,r);
+		maxi[o] = max(maxi[o*2],maxi[o*2+1]);
+	}
+}
+
+int ql,qr;
+long long qv;
+void query(int o,int l,int r){
+	if(ql<=l&&qr>=r){
+		qv = max(qv,maxi[o]);
+	}else{
+		int m = (l+r)/2;
+		if(ql<=m) query(o*2,l,m);
+		if(qr>m) query(o*2+1,m+1,r);
+	}
+}
+
+int main(){
+
+    ios::sync_with_stdio(false);
+
+//    freopen("input.txt","r",stdin);
+//    freopen("output.txt","w",stdout);
+
+    int n;
+    cin>>n;
+    vector<long long> h(n,0);
+    for(int i=0;i<n;i++) cin>>h[i];
+    vector<long long> b(n,0);
+    for(int i=0;i<n;i++) cin>>b[i];
+
+    vector<int> le(n,-1);
+    vector<int> st;
+    for(int i=0;i<n;i++){
+    	while(!st.empty()){
+    		if(h(st.back())>h[i]) st.pop_back();
+    		else break;
+    	}
+    }
+
+
+
+
+
+    return 0;
+}

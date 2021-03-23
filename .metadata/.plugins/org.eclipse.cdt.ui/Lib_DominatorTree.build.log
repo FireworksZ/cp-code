@@ -1,0 +1,6 @@
+13:35:13 **** Incremental Build of configuration Debug for project Lib_DominatorTree ****
+make all 
+make: Nothing to be done for 'all'.
+
+13:35:13 Build Finished. 0 errors, 0 warnings. (took 186ms)
+

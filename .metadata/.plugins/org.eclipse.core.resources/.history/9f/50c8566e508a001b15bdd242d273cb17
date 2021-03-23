@@ -1,0 +1,81 @@
+#include<bits/stdc++.h>
+
+
+using namespace std;
+
+#define double long double
+
+typedef pair<int,int> ii;
+typedef pair<int,long long> il;
+typedef pair<long long,long long> ll;
+typedef pair<ll,int> lli;
+typedef pair<long long,int> li;
+typedef pair<double,double> dd;
+typedef pair<ii,int> iii;
+typedef pair<double,int> di;
+typedef pair<int,ii> iii2;
+typedef pair<ii,ii> iiii;
+
+const long long mod = 1000000007LL;
+const long long large = 2000000000000000000LL;
+
+typedef unsigned long long ull;
+
+int gcd(int x,int y){
+	if(y==0) return x;
+	return gcd(y,x%y);
+}
+
+int main(){
+
+    ios::sync_with_stdio(false);
+
+//    freopen("input.txt","r",stdin);
+//    freopen("output.txt","w",stdout);
+
+    int t;
+    cin>>t;
+    while(t--){
+    	int n;
+    	cin>>n;
+    	vector<int> a(n,0);
+    	for(int i=0;i<n;i++){
+    		cin>>a[i];
+    	}
+    	vector<int> ri(n,-1),le(n,-1);
+    	queue<ii> q;
+    	for(int i=0;i<n;i++){
+    		ri[i] = (i+1)%n;
+    		le[i] = (i+n-1)%n;
+    	}
+    	for(int i=0;i<n;i++){
+    		int y = le[i];
+    		if(gcd(a[y],a[i])==1) q.push(ii(i,le[i]));
+    	}
+    	cout<<q.size()<<"!"<<endl;
+    	vector<int> f(n,1);
+    	vector<int> t;
+    	while(!q.empty()){
+    		int u = q.front().first;
+    		int v = q.front().second;
+    		q.pop();
+    		if(!f[v]) continue;
+    		if(!f[u]) continue;
+    		t.push_back(u);
+    		f[u] = 0;
+    		int ru = ri[u];
+    		int lu = le[u];
+    		ri[lu] = ru;
+    		le[ru] = lu;
+    		if(gcd(a[ru],a[lu])==1) q.push(ii(ru,lu));
+    	}
+    	cout<<t.size()<<" ";
+    	for(int i=0;i<(int)t.size();i++) cout<<t[i]+1<<" ";
+    	cout<<endl;
+
+
+    }
+
+
+    return 0;
+}

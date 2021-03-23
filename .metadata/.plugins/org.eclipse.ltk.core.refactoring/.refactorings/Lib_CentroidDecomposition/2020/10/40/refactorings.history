@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Lib_CentroidDecomposition/test.cpp&apos; to &apos;CentroidDecomposition.cpp&apos;" description="Rename resource &apos;test.cpp&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="test.cpp" name="CentroidDecomposition.cpp" stamp="1601529368531" updateReferences="true"/>
+</session>

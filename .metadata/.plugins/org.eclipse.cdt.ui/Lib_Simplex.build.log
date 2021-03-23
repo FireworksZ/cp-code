@@ -1,0 +1,15 @@
+13:35:50 **** Build of configuration Debug for project Lib_Simplex ****
+make all 
+Building file: ../Simplex.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"Simplex.d" -MT"Simplex.o" -o "Simplex.o" "../Simplex.cpp"
+Finished building: ../Simplex.cpp
+ 
+Building target: Lib_Simplex.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_Simplex.exe"  ./Simplex.o   
+Finished building target: Lib_Simplex.exe
+ 
+
+13:35:53 Build Finished. 0 errors, 0 warnings. (took 2s.983ms)
+

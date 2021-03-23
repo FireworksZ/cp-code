@@ -1,0 +1,15 @@
+13:36:13 **** Build of configuration Debug for project Lib_Z_Function ****
+make all 
+Building file: ../z.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"z.d" -MT"z.o" -o "z.o" "../z.cpp"
+Finished building: ../z.cpp
+ 
+Building target: Lib_Z_Function.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_Z_Function.exe"  ./z.o   
+Finished building target: Lib_Z_Function.exe
+ 
+
+13:36:16 Build Finished. 0 errors, 0 warnings. (took 2s.275ms)
+

@@ -1,0 +1,15 @@
+13:35:10 **** Build of configuration Debug for project Lib_BIT_2D ****
+make all 
+Building file: ../BIT_2D.cpp
+Invoking: Cygwin C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"BIT_2D.d" -MT"BIT_2D.o" -o "BIT_2D.o" "../BIT_2D.cpp"
+Finished building: ../BIT_2D.cpp
+ 
+Building target: Lib_BIT_2D.exe
+Invoking: Cygwin C++ Linker
+g++  -o "Lib_BIT_2D.exe"  ./BIT_2D.o   
+Finished building target: Lib_BIT_2D.exe
+ 
+
+13:35:13 Build Finished. 0 errors, 0 warnings. (took 2s.82ms)
+
