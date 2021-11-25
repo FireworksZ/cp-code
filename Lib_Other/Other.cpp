@@ -39,6 +39,32 @@ using namespace std;
 //2. s[n][k] = k*s[n-1][k]+s[n-1][k-1];
 //3. use FFT to calculate Stirling number
 
+istream &operator>>(istream &is, __int128 &x) {
+	string s;
+	is >> s;
+	bool neg = false;
+	if(s.size() > 0 && s[0] == '-') {
+		neg = true; s = s.substr(1);
+	}
+	x = 0;
+	for (char t: s) x = x * 10 + t - '0';
+	if (neg) x = -x;
+	return is;
+}
+
+ostream &operator<<(ostream &os, __int128 x) {
+	if (x < 0) return os << "-" << (-x);
+	else if (x == 0) return os << "0";
+	else {
+		string s = "";
+		while (x > 0) {
+			s = static_cast<char>('0' + x % 10) + s;
+			x /= 10;
+		}
+		return os << s;
+	}
+}
+
 int main(){
 
 }

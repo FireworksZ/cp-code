@@ -54,6 +54,14 @@ long long inv(long long a,long long n){
 	return d==1?(x+n)%n:-1;
 }
 
+//fast inv
+void get_inv(long long n){
+	vector<long long> inv;
+	long long mod = 1000000007LL;
+	inv[0] = inv[1] = 1;
+	for(long long i=2;i<n;i++) inv[i]=1ll*(mod-mod/i)*inv[mod%i]%mod;
+}
+
 
 //calculate the number of integers that relativly prime to n;
 int euler_phi(int n){
