@@ -6,19 +6,26 @@
 CPP_SRCS += \
 ../test.cpp 
 
-OBJS += \
-./test.o 
-
 CPP_DEPS += \
 ./test.d 
 
+OBJS += \
+./test.o 
+
 
 # Each subdirectory must supply rules for building sources it contributes
-%.o: ../%.cpp
+%.o: ../%.cpp subdir.mk
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cygwin C++ Compiler'
-	g++ -std=c++98 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	g++ -std=c++98 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
+
+clean: clean--2e-
+
+clean--2e-:
+	-$(RM) ./test.d ./test.o
+
+.PHONY: clean--2e-
 
