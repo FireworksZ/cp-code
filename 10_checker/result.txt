@@ -1,0 +1,3 @@
+Comparing files user_out.txt and JUDGE_OUT.TXT
+FC: no differences encountered
+
