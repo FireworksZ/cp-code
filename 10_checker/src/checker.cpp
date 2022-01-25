@@ -10,7 +10,7 @@ string solution = "\"C:/Data/cpp-workspace/cp-code/1_Solution/Debug/1_Solution.e
 //string data_file = "\"E:/FileTransfer/ICPCèµ„æ–™/2021/hduå¤šæ ¡è�”å�ˆèµ›/01/Another thief in a Shop\"";
 string data_file = "C:/Data/cpp-workspace/cp-code/10_checker/input.txt";
 
-string checker_folder = "C:/Data/cpp-workspace/cp-code/10_checker/";
+string checker_folder = "\"C:/Data/cpp-workspace/cp-code/10_checker/";
 
 char test_cmd[100000];
 char judge_cmd[100000];
@@ -18,8 +18,8 @@ char fc_cmd[100000];
 
 void preprocess(){
 
-	string user_output = checker_folder+"user_out.txt";
-	string judge_output = checker_folder+"judge_out.txt";
+	string user_output = checker_folder+"user_out.txt\"";
+	string judge_output = checker_folder+"judge_out.txt\"";
 
 	string test_temp = test+" < "+data_file+" > "+user_output;
 //	string test_temp = test+" < "+data_file;
@@ -42,14 +42,6 @@ void preprocess(){
 	}
 	judge_cmd[pt++] = '\0';
 
-//	printf("%s\n",test_cmd);
-
-	string fc_tmp = "fc "+user_output+" "+judge_output;
-	pt = 0;
-	for(int i=0;i<(int)fc_tmp.length();i++){
-		fc_cmd[pt++] = fc_tmp[i];
-	}
-	printf("%s\n",fc_cmd);
 
 }
 int main(){
@@ -60,12 +52,10 @@ int main(){
 //    system(judge_cmd);
     cout<<"Generating user output..."<<endl;
     system(test_cmd);
-//    system(fc_cmd);
 
-//    if(system(fc_cmd)){
-//    	cout<<"AC!"<<endl;
-//    }
 
+
+    system("fc.exe user_out.txt judge_out.txt");
 
     return 0;
 }
