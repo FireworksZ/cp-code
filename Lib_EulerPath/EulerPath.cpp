@@ -14,32 +14,34 @@
 using namespace std;
 typedef pair<int,int> ii;
 vector<vector<ii> > adj;
-
+vector<int> pos;
 //note that cyc stores the reverse order of Euler path
-list<ii> cyc;
+list<ii> path;
 void EulerPath(list<ii>::iterator i,int u){
-	for(int j=0;j<(int)adj[u].size();j++){
-		ii& v = adj[u][j];
-		if(v.second){
-			v.second=0;
-			for(int k=0;k<(int)adj[v.first].size();k++){
-				ii& uu = adj[v.first][k];
-				if(uu.first==u&&uu.second){
-					uu.second=0;
-					break;
-				}
-			}
-			EulerPath(cyc.insert(i,ii(u,v.first)),v.first);
+	while(pos[u]<(int)adj[u].size()){
+		int v = adj[u][pos[u]].first;
+		int ind = adj[u][pos[u]].second;
+		if(v==-1){
+			pos[u]++;
+			continue;
 		}
+		adj[v][ind].first=-1;
+		adj[u][pos[u]].first=-1;
+		pos[u]++;
+		EulerPath(path.insert(i,ii(u,v)),v);
 	}
 }
 
-int main(){
-	cyc.clear();
-	//build adj list
-	int start; //pick the start point;
-	EulerPath(cyc.begin(),start);
 
+int main(){
+	int n;
+	cin>>n;
+	path.clear();
+	//build adj list; each pair store ii(node_id, position in array adj[u])
+	//init pos;
+	int start; //pick the start point;
+	EulerPath(path.begin(),start);
+	//!!!Reverse path for actual route!!!
 
 	return 0;
 }

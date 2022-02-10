@@ -21,10 +21,10 @@ long long mod = 1000000007LL;
 const long long large = 2000000000000000000LL;
 
 
+
 int main(){
 	ios::sync_with_stdio(false);
 
 
-
-    return 0;
+	return 0;
 }
