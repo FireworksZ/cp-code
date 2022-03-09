@@ -6,19 +6,26 @@
 CPP_SRCS += \
 ../Dinic.cpp 
 
-OBJS += \
-./Dinic.o 
-
 CPP_DEPS += \
 ./Dinic.d 
 
+OBJS += \
+./Dinic.o 
+
 
 # Each subdirectory must supply rules for building sources it contributes
-%.o: ../%.cpp
+%.o: ../%.cpp subdir.mk
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cygwin C++ Compiler'
-	g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
+
+clean: clean--2e-
+
+clean--2e-:
+	-$(RM) ./Dinic.d ./Dinic.o
+
+.PHONY: clean--2e-
 
