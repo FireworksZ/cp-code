@@ -17,102 +17,185 @@ typedef pair<ii,ii> iiii;
 long long mod = 1000000007LL;
 long long large = 1000000000000000000LL;
 
-//http://blog.csdn.net/bless924295/article/details/53172487
-//二分图最大权匹配
-//图必须为n x n的全二分图
-//有必要的情况下可以加dummy node去满足n x n全二分图
-//O(n^3)
-//match[] store the matching result
-//match[i] match with i using edge with weight[match[i]][i]
-#define inf 0x3f3f3f3f
-const int N=1000;
-int match[N];
-int lx[N],ly[N];
-int sx[N],sy[N];
-int weight[N][N];
-int n;
-int dfs(int x){
-    sx[x]=true;
-    for(int i=0;i<n;i++){
-        if(!sy[i]&&lx[x]+ly[i]==weight[x][i]){
-            sy[i]=true;
-            if(match[i]==-1||dfs(match[i])){
-                match[i]=x;
-                return true;
-            }
-        }
+template <typename T>
+struct hungarian    // km
+{
+    int n;
+    vector<int> matchx;
+    vector<int> matchy;
+    vector<int> pre;
+    vector<bool> visx;
+    vector<bool> visy;
+    vector<T> lx;
+    vector<T> ly;
+    vector<vector<T> > g;
+    vector<T> slack;
+    T inf;
+    T res;
+    queue<int> q;
+    int org_n;
+    int org_m;
+
+    hungarian(int _n, int _m)
+    {
+        org_n = _n;
+        org_m = _m;
+        n = max(_n, _m);
+        inf = numeric_limits<T>::max();
+        res = 0;
+        g = vector<vector<T> >(n, vector<T>(n));
+        matchx = vector<int>(n, -1);
+        matchy = vector<int>(n, -1);
+        pre = vector<int>(n);
+        visx = vector<bool>(n);
+        visy = vector<bool>(n);
+        lx = vector<T>(n, -inf);
+        ly = vector<T>(n);
+        slack = vector<T>(n);
     }
-    return false;
-}
-// fax(1) find maximum matching
-// fax(0) find minimum matching
-int fax(int x){
-    if(!x){
-        for(int i=0;i<n;i++){
-            for(int j=0;j<n;j++){
-                weight[i][j]=-weight[i][j];
-            }
-        }
+
+    void addEdge(int u, int v, int w)
+    {
+        g[u][v] = w;
     }
-    memset(match,-1,sizeof(match));
-    for(int i=0;i<n;i++){
-        ly[i]=0;
-        lx[i]=-inf;
-        for(int j=0;j<n;j++){
-            if(weight[i][j]>lx[i]){
-                lx[i]=weight[i][j];
-            }
+
+    bool check(int v)
+    {
+        visy[v] = true;
+        if (matchy[v] != -1)
+        {
+            q.push(matchy[v]);
+            visx[matchy[v]] = true;
+            return false;
         }
+        while (v != -1)
+        {
+            matchy[v] = pre[v];
+            swap(v, matchx[pre[v]]);
+        }
+        return true;
     }
-    for(int i=0;i<n;i++){
-        while(1){
-            memset(sx,0,sizeof(sx));
-            memset(sy,0,sizeof(sy));
-            if(dfs(i))
-                break;
-            int mic=inf;
-            for(int j=0;j<n;j++){
-                if(sx[j]){
-                    for(int k=0;k<n;k++){
-                        if(!sy[k]&&lx[j]+ly[k]-weight[j][k]<mic){
-                            mic=lx[j]+ly[k]-weight[j][k];
+
+    void bfs(int i)
+    {
+        while (!q.empty())
+        {
+            q.pop();
+        }
+        q.push(i);
+        visx[i] = true;
+        while (true)
+        {
+            while (!q.empty())
+            {
+                int u = q.front();
+                q.pop();
+                for (int v = 0; v < n; v++)
+                {
+                    if (!visy[v])
+                    {
+                        T delta = lx[u] + ly[v] - g[u][v];
+                        if (slack[v] >= delta)
+                        {
+                            pre[v] = u;
+                            if (delta)
+                            {
+                                slack[v] = delta;
+                            }
+                            else if (check(v))
+                            {
+                                return;
+                            }
                         }
                     }
                 }
             }
-            if(mic==0)
-                return -1;
-            for(int j=0;j<n;j++){
-                if(sx[j]){
-                    lx[j]-=mic;
+            // 没有增广路 修改顶标
+            T a = inf;
+            for (int j = 0; j < n; j++)
+            {
+                if (!visy[j])
+                {
+                    a = min(a, slack[j]);
                 }
-                if(sy[j]){
-                    ly[j]+=mic;
+            }
+            for (int j = 0; j < n; j++)
+            {
+                if (visx[j])    // S
+                {
+                    lx[j] -= a;
+                }
+                if (visy[j])    // T
+                {
+                    ly[j] += a;
+                }
+                else      // T'
+                {
+                    slack[j] -= a;
+                }
+            }
+            for (int j = 0; j < n; j++)
+            {
+                if (!visy[j] && slack[j] == 0 && check(j))
+                {
+                    return;
                 }
             }
         }
     }
-    int sum=0;
-    for(int i=0;i<n;i++){
-        if(match[i]>=0){
-            sum+=weight[match[i]][i];
+
+    T solve()
+    {
+        // 初始顶标
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                lx[i] = max(lx[i], g[i][j]);
+            }
         }
+
+        for (int i = 0; i < n; i++)
+        {
+            fill(slack.begin(), slack.end(), inf);
+            fill(visx.begin(), visx.end(), false);
+            fill(visy.begin(), visy.end(), false);
+            bfs(i);
+        }
+
+        // custom
+        for (int i = 0; i < n; i++)
+        {
+            if (g[i][matchx[i]] > 0)
+            {
+                res += g[i][matchx[i]];
+            }
+            else
+            {
+                matchx[i] = -1;
+            }
+        }
+        return res;
+//        for (int i = 0; i < org_n; i++)
+//        {
+//            cout << matchx[i] + 1 << " ";
+//        }
+//        cout << "\n";
     }
-    if(!x){
-        sum=-sum;
-    }
-    return sum;
-}
+};
 
 int main(){
-    scanf("%d",&n);
+	int n;
+    cin>>n;
+    hungarian<long long> solver(n,n);
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            scanf("%d",&weight[i][j]);
+        	long long v;
+        	cin>>v;
+            solver.addEdge(i, j, v);
         }
     }
-    int h=fax(1);
-    cout<<h<<endl;
+    cout<<solver.solve()<<endl;
     /*
     5
     3 4 6 4 9

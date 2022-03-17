@@ -15,8 +15,7 @@ const long long large = 4000000000000000000LL;
 
 
 int main(){
-	fastio;
-
+//	fastio;
 
 
 
