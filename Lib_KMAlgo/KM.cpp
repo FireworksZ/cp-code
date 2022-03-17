@@ -4,19 +4,6 @@ using namespace std;
 
 #define double long double
 
-typedef pair<int,int> ii;
-typedef pair<int,long long> il;
-typedef pair<long long,long long> ll;
-typedef pair<ll,int> lli;
-typedef pair<long long,int> li;
-typedef pair<double,double> dd;
-typedef pair<ii,int> iii;
-typedef pair<double,int> di;
-typedef pair<int,ii> iii2;
-typedef pair<ii,ii> iiii;
-long long mod = 1000000007LL;
-long long large = 1000000000000000000LL;
-
 template <typename T>
 struct hungarian    // km
 {
@@ -166,14 +153,7 @@ struct hungarian    // km
         // custom
         for (int i = 0; i < n; i++)
         {
-            if (g[i][matchx[i]] > 0)
-            {
-                res += g[i][matchx[i]];
-            }
-            else
-            {
-                matchx[i] = -1;
-            }
+            res += g[i][matchx[i]];
         }
         return res;
 //        for (int i = 0; i < org_n; i++)
