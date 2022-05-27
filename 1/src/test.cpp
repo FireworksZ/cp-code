@@ -9,9 +9,13 @@ typedef long long ll;
 typedef unsigned long long ull;
 
 typedef pair<int,int> ii;
+typedef pair<ii,ii> iiii;
+typedef pair<ll,int> li;
+typedef pair<int,ii> iii;
+typedef pair<ll,ll> pll;
 
 ll mod = 1000000007LL;
-const ll large = 4000000000000000000LL;
+const ll large = 2000000000000000000LL;
 
 
 int main(){

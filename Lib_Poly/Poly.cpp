@@ -4,6 +4,7 @@ using namespace std;
 typedef long long ll;
 
 const int N = 3000007;
+const int bN = 22;
 const int p = 998244353, gg = 3, ig = 332738118, img = 86583718;
 const int mod = 998244353;
 
@@ -39,7 +40,7 @@ namespace Poly
     const int G = 3;//根据具体的模数而定，原根可不一定不一样！！！
     //一般模数的原根为 2 3 5 7 10 6
     const int inv_G = qpow(G, mod - 2);
-    int RR[N], deer[2][19][N], inv[N];
+    int RR[N], deer[2][bN][N], inv[N];
 
     void init(const int t) {//预处理出来NTT里需要的w和wn，砍掉了一个log的时间
         for(int p = 1; p <= t; ++ p) {
