@@ -1,0 +1,1 @@
+SuffixAutomaton.o: ../SuffixAutomaton.cpp

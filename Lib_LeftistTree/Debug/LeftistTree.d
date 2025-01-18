@@ -1,0 +1,1 @@
+LeftistTree.o: ../LeftistTree.cpp

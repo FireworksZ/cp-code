@@ -1,0 +1,1 @@
+LyndonFactorization.o: ../LyndonFactorization.cpp
