@@ -23,9 +23,28 @@ const int int_large = 1e9;
 
 //begin
 
+vector<long long> fast_subset_convolution(vector<long long> a,int sz){
+	for(int b=0;b<sz;b++){
+		for(int i=0;i<(1<<sz);i++){
+			if(i&(1<<b)){
+				a[i]+=a[i^(1<<b)];
+				a[i]%=mod;
+			}
+		}
+	}
+	return a;
+}
 
 void solve(){
 
+	int sz;
+	cin>>sz;
+	int l = (1<<sz);
+	vector<ll> a(l,1);
+
+	a = fast_subset_convolution(a,sz);
+	for(int i=0;i<l;i++) cout<<a[i]<<" ";
+	cout<<endl;
 
 
 }

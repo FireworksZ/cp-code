@@ -145,8 +145,8 @@ vector<long long> fast_subset_convolution(vector<long long> a,int sz){
 	for(int b=0;b<sz;b++){
 		for(int i=0;i<(1<<sz);i++){
 			if(i&(1<<b)){
-				a[i+(1<<b)]+=a[i];
-				a[i+(1<<b)]%=mod;
+				a[i]+=a[i^(1<<b)];
+				a[i]%=mod;
 			}
 		}
 	}
