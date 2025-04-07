@@ -24,8 +24,8 @@ const int int_large = 1e9;
 //begin
 
 
-
 void solve(){
+
 
 
 }
@@ -35,7 +35,9 @@ int main(){
 	fastio;
 
 	int t=1;
+
 	cin>>t;
+
 	while(t--){
 		solve();
 	}
