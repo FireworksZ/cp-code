@@ -266,7 +266,8 @@ struct LCT{
 	}
 	void link(int x,int y){
 		mroot(x);
-		if(x==findLCTRoot(y)) return;
+//		add following to double check if necessary
+//		if(x==findLCTRoot(y)) return;
 		parent[x] = y;
 	}
 	bool query(int x,int y){
