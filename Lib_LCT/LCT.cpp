@@ -70,6 +70,7 @@ struct LCT{
 		return nodeCnt++;
 	}
 
+	// push up
 	void update(int x){
 		if(x==-1) return;
 		size[x] = 1;
@@ -77,6 +78,7 @@ struct LCT{
 		if(childs[x][1]!=-1) size[x]+=size[childs[x][1]];
 	}
 
+	//push down
 	void pass(int x){
 		if(x==-1) return;
 		if(reversed[x]){
