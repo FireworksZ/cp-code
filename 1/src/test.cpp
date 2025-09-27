@@ -16,12 +16,25 @@ typedef pair<ii,int> iii2;
 typedef pair<ll,ll> pll;
 typedef pair<int,ll> il;
 
-ll mod = 1000000007;
+ll mod = 998244353ll;
 
 const ll large = 1000000000000000000LL;
 const int int_large = 1e9;
 
-//begin
+int __test_case = 1;
+
+
+// prepare----------------------------------------------------------------
+
+
+
+void __prepare(){
+	cin>>__test_case;
+
+
+}
+
+// begin----------------------------------------------------------------
 
 
 
@@ -36,11 +49,9 @@ void solve(){
 int main(){
 	fastio;
 
-	int t=1;
+	__prepare();
 
-	cin>>t;
-
-	while(t--){
+	while(__test_case--){
 		solve();
 	}
 
