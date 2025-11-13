@@ -3,8 +3,8 @@
 using namespace std;
 typedef long long ll;
 
-const int N = 3000007;
-const int bN = 22;
+const int N = 5000007;
+const int bN = 23;
 const int p = 998244353, gg = 3, ig = 332738118, img = 86583718;
 const int mod = 998244353;
 
@@ -18,7 +18,7 @@ template <typename T>void read(T &x)
     x *= f;
 }
 
-int qpow(int a, int b)
+int qpow(int a, ll b)
 {
     int res = 1;
     while(b) {
@@ -173,6 +173,64 @@ namespace Poly
         return poly_exp(f, f.size());
     }
 
+    poly poly_rev(const poly &f, int deg) {//多项式翻转
+		poly g(deg);
+		int n = f.size();
+		for(int i = 0; i < deg; ++ i) {
+			if (n - 1 - i >= 0 && n - 1 - i < n)
+				g[i] = f[n - 1 - i];
+			else
+				g[i] = 0;
+		}
+		return g;
+	}
+
+    //多项式相除求商和余数
+	pair<poly, poly> poly_div(poly F, poly G) {
+		// F(x) = Q(x)G(x) + R(x)
+		int n = F.size(), m = G.size();
+		if (n < m) { // 被除式次数小于除式次数
+			return {poly(1, 0), F}; // 商为 0，余为 F
+		}
+
+		// Q(x) 的次数 k = n - m
+		int k = n - m;
+		int deg_k_plus_1 = k + 1;
+
+		// 1. 翻转 F 和 G，并截取 G^R 到 k+1 次
+		poly FR = poly_rev(F, n); // F^R, deg: n-1
+		poly GR = poly_rev(G, m); // G^R, deg: m-1
+		GR.resize(deg_k_plus_1);
+
+		// 2. 求 (G^R)^-1 mod x^(k+1)
+		poly inv_GR = poly_inv(GR, deg_k_plus_1);
+
+		// 3. 计算 Q^R(x) = F^R(x) * (G^R(x))^-1 mod x^(k+1)
+		// 注意：F^R 需要 resize 到足够的长度 (2*k+2) 才能进行乘法
+		// 但根据原理，我们只需要乘积 mod x^(k+1) 的部分。
+		// 将 FR 截断到 k+1 次就够了，因为乘积的高次项会被模掉。
+		FR.resize(deg_k_plus_1);
+		poly QR = poly_mul(FR, inv_GR);
+		QR.resize(deg_k_plus_1);
+
+		// 4. 翻转得到商式 Q(x)
+		// Q(x) 次数为 k，所以 Q^R(x) 的系数应取前 k+1 项 (0到k次)
+		poly Q = poly_rev(QR, deg_k_plus_1); // Q(x) 长度为 k+1, deg: k
+
+		// 5. 计算余式 R(x) = F(x) - Q(x)G(x)
+		poly QG = poly_mul(Q, G);
+		int R_deg = m - 1;
+		poly R(R_deg + 1);
+
+		// 循环计算 R 的每一项系数: R[i] = F[i] - (QG)[i]
+		for (int i = 0; i <= R_deg; ++ i) {
+			int QG_i = (i < (int)QG.size()) ? QG[i] : 0;
+			R[i] = minus(F[i], QG_i);
+		}
+
+		return {Q, R};
+	}
+
     poly poly_cos(poly f, int deg) {//多项式三角函数（cos）
         poly A(f.begin(), f.begin() + deg);
         poly B(deg), C(deg);
@@ -225,6 +283,171 @@ namespace Poly
         C = poly_idev(C);
         return C;
     }
+
+    // -----------------------------------------------------------
+	// 多项式多点求值所需辅助函数
+	// -----------------------------------------------------------
+
+	// 辅助结构体：用于存储模数树的节点
+	vector<poly> M;// 存储模数树 M[i]
+
+	// 1. 构造模数树
+	void build_tree(const vector<int> &x, int i, int l, int r) {
+		if (l == r) {
+			// 叶子节点: M[i](x) = x - x[l]
+			M[i].resize(2);
+			M[i][0] = minus(mod, x[l]); // -x[l]
+			M[i][1] = 1;                 // x
+			return;
+		}
+
+		int mid = (l + r) >> 1;
+		build_tree(x, i << 1, l, mid);
+		build_tree(x, i << 1 | 1, mid + 1, r);
+		// 内部节点: M[i] = M[i*2] * M[i*2+1]
+		M[i] = poly_mul(M[i << 1], M[i << 1 | 1]);
+	}
+
+	// 2. 多项式取模（直接调用 poly_div 并返回余数 R）
+	poly poly_mod(poly F, poly G) {
+		// F(x) mod G(x) = R(x)
+		int n = F.size(), m = G.size();
+		if (n < m) return F; // deg(F) < deg(G), 余数即为 F
+
+		// 调用 poly_div，我们只需要余数 R
+		// poly_div 返回 {Q, R}
+		return poly_div(F, G).second;
+	}
+
+	// 3. 分治求值
+	void solve_eval(poly A, int i, int l, int r, vector<int> &res) {
+		if (l == r) {
+			// 叶子节点: 结果为 A(x) mod (x - x_l) 的常数项
+			// A(x) mod (x - x_l) = R_0 (常数)
+			res[l] = A[0];
+			return;
+		}
+
+		int mid = (l + r) >> 1;
+
+		// A_left(x) = A(x) mod M[i*2](x)
+		poly A_left = poly_mod(A, M[i << 1]);
+		solve_eval(A_left, i << 1, l, mid, res);
+
+		// A_right(x) = A(x) mod M[i*2+1](x)
+		poly A_right = poly_mod(A, M[i << 1 | 1]);
+		solve_eval(A_right, i << 1 | 1, mid + 1, r, res);
+	}
+
+	// -----------------------------------------------------------
+	// 多项式多点求值主函数
+	// -----------------------------------------------------------
+	// F: 待求值的多项式
+	// x: 求值点集合
+	vector<int> poly_eval(poly F, const vector<int> &x) {
+		int m = x.size();
+		if (m == 0) return {};
+
+		// 1. 构造模数树
+		M.resize(4 * m); // 树的节点数量约为 4*m
+		build_tree(x, 1, 0, m - 1);
+
+		// 2. 截断 F(x): A'(x) = F(x) mod M[1, m](x)
+		// M[1] 是整棵树的根，即 M[1, m](x)
+		F = poly_mod(F, M[1]);
+
+		// 3. 分治求值
+		vector<int> res(m);
+		solve_eval(F, 1, 0, m - 1, res);
+
+		return res;
+	}
+
+	// -----------------------------------------------------------
+	// 多项式快速插值所需辅助函数
+	// -----------------------------------------------------------
+
+	// 4. 分治插值
+	// x: 节点 x 坐标, y: 节点 y 坐标
+	// i: 模数树节点索引, l, r: 节点对应 x 的范围
+	poly solve_interp(const vector<int> &x, const vector<int> &y,
+					  const vector<int> &inv_Mx, int i, int l, int r) {
+
+		if (l == r) {
+			// 叶子节点：返回常数多项式 P(x) = y[l] / M'(x[l])
+			poly P(1);
+			// P[0] = y[l] * inv_Mx[l]
+			P[0] = 1ll * y[l] * inv_Mx[l] % mod;
+			return P;
+		}
+
+		int mid = (l + r) >> 1;
+
+		// 递归计算左侧插值结果 P_L(x) 和右侧插值结果 P_R(x)
+		poly P_L = solve_interp(x, y, inv_Mx, i << 1, l, mid);
+		poly P_R = solve_interp(x, y, inv_Mx, i << 1 | 1, mid + 1, r);
+
+		// 合并：P(x) = P_L(x) * M_R(x) + P_R(x) * M_L(x)
+		// M_L(x) = M[i*2], M_R(x) = M[i*2+1]
+
+		// P_L(x) * M_R(x)
+		poly term1 = poly_mul(P_L, M[i << 1 | 1]);
+
+		// P_R(x) * M_L(x)
+		poly term2 = poly_mul(P_R, M[i << 1]);
+
+		// P(x) = term1 + term2
+		int deg_P = max(term1.size(), term2.size());
+		poly P(deg_P);
+
+		for (int j = 0; j < deg_P; ++ j) {
+			int t1 = (j < term1.size()) ? term1[j] : 0;
+			int t2 = (j < term2.size()) ? term2[j] : 0;
+			P[j] = plus(t1, t2);
+		}
+
+		return P;
+	}
+
+	// -----------------------------------------------------------
+	// 多项式快速插值主函数
+	// -----------------------------------------------------------
+	// x: 插值点的 x 坐标, y: 插值点的 y 坐标 (必须 |x| = |y|)
+	poly poly_fast_interp(const vector<int> &x, const vector<int> &y) {
+		int n = x.size();
+		if (n == 0) return poly(1, 0);
+
+		// 1. 构造模数树 M[i]
+		// M 已经在 poly_eval 中定义并使用了，这里沿用 M
+		M.resize(4 * n);
+		build_tree(x, 1, 0, n - 1);
+
+		// 2. 计算 M(x) = M[1, n](x)
+		poly Mx = M[1];
+
+		// 3. 计算 M'(x) (求导)
+		poly Mx_dev = poly_dev(Mx);
+
+		// 4. 多点求值计算 M'(x_i)
+		// 注意：Mx_dev 的长度为 n (deg: n-1)，x 的长度为 n
+		vector<int> Mx_dev_at_xi = poly_eval(Mx_dev, x);
+
+		// 5. 计算 M'(x_i) 的逆 (1 / M'(x_i))
+		vector<int> inv_Mx(n);
+		for (int i = 0; i < n; ++ i) {
+			// 确保 M'(x_i) 不为 0，否则插值点不唯一！
+			if (Mx_dev_at_xi[i] == 0) {
+				// 应该抛出异常或返回错误，因为插值点有重复
+				// 在模 mod 意义下，M'(x_i)=0 表示 x_i 是 M(x) 的重根
+			}
+			inv_Mx[i] = qpow(Mx_dev_at_xi[i], mod - 2);
+		}
+
+		// 6. 分治计算 P(x)
+		poly P = solve_interp(x, y, inv_Mx, 1, 0, n - 1);
+
+		return P;
+	}
 }
 
 using Poly::poly;

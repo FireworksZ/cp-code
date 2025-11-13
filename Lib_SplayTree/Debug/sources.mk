@@ -2,24 +2,31 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-C_UPPER_SRCS := 
-CXX_SRCS := 
-C++_SRCS := 
-OBJ_SRCS := 
-CC_SRCS := 
 ASM_SRCS := 
+C++M_SRCS := 
+C++_SRCS := 
+CCM_SRCS := 
+CC_SRCS := 
 CPP_SRCS := 
+CXXM_SRCS := 
+CXX_SRCS := 
 C_SRCS := 
-S_UPPER_SRCS := 
+C_UPPER_SRCS := 
+OBJ_SRCS := 
 O_SRCS := 
-CC_DEPS := 
+SX_SRCS := 
+S_UPPER_SRCS := 
+C++M_DEPS := 
 C++_DEPS := 
+CCM_DEPS := 
+CC_DEPS := 
+CPP_DEPS := 
+CXXM_DEPS := 
+CXX_DEPS := 
+C_DEPS := 
+C_UPPER_DEPS := 
 EXECUTABLES := 
 OBJS := 
-C_UPPER_DEPS := 
-CXX_DEPS := 
-CPP_DEPS := 
-C_DEPS := 
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \

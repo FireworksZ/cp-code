@@ -40,20 +40,19 @@ typedef pair<ii,ii> iiii;
 long long mod = 1000000007LL;
 long long large = 2000000000000000000LL;
 
+const int SZ = 5000010;
 
 struct SplayTree{
 	int nodeCnt;
 	int root;
-	vector<int> type,parent,size,stack,reversed;
-	vector<vector<int> > childs;
+
+	int type[SZ],parent[SZ],size[SZ],stack[SZ],reversed[SZ],childs[SZ][2];
 
 	void init(int n){
 		root = -1;
 		nodeCnt = 0;
-		type.assign(n,-1);
-		parent = size = stack = type;
-		reversed.assign(n,0);
-		childs.assign(n,vector<int>(2,-1));
+		for(int i=0;i<n;i++) malloc();
+
 	}
 
 	/*SplayTree(int n){
