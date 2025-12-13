@@ -17,6 +17,8 @@ using namespace std;
 
 int mod = 998244353;
 
+typedef long long ll;
+
 struct mint {
 	int x;
 	inline mint(int o = 0) { x = o; }

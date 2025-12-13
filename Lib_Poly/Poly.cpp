@@ -448,7 +448,145 @@ namespace Poly
 
 		return P;
 	}
+
+	// -----------------------------------------------------------
+	// Bostan–Mori 算法辅助函数
+	// -----------------------------------------------------------
+
+	// 多项式抽取：type=0 偶数次项系数, type=1 奇数次项系数
+	poly poly_extract(const poly &f, int type) {
+		poly res;
+		int n = f.size();
+		for (int i = type; i < n; i += 2) {
+			res.push_back(f[i]);
+		}
+		if (res.empty()) res.push_back(0); // 保证不为空，避免 NTT 出错
+		return res;
+	}
+
+	// -----------------------------------------------------------
+	// Bostan–Mori 算法主函数
+	// -----------------------------------------------------------
+	// 计算 [x^k] P(x) / Q(x)
+	int bostan_mori(poly P, poly Q, long long k) {
+		while (k > 0) {
+			// 1. 预处理 Q 的奇偶部分
+			poly Qe = poly_extract(Q, 0); // Q_e(x)
+			poly Qo = poly_extract(Q, 1); // Q_o(x)
+
+			// 2. 计算新分母 Q_new(x) = Q_e^2(x) - x Q_o^2(x)
+			// 这一步与 k 的奇偶性无关，始终执行
+			poly Qe_sq = poly_mul(Qe, Qe);
+			poly Qo_sq = poly_mul(Qo, Qo);
+
+			int deg_Q_new = max(Qe_sq.size(), Qo_sq.size() + 1);
+			Q.resize(deg_Q_new);
+			for(int i = 0; i < deg_Q_new; ++ i) {
+				int term1 = (i < (int)Qe_sq.size()) ? Qe_sq[i] : 0;
+				// 注意：x * Qo^2(x) 意味着系数向高位移动一位，即取 i-1 项
+				int term2 = (i > 0 && i - 1 < (int)Qo_sq.size()) ? Qo_sq[i - 1] : 0;
+				Q[i] = minus(term1, term2);
+			}
+
+			// 3. 预处理 P 的奇偶部分
+			poly Pe = poly_extract(P, 0);
+			poly Po = poly_extract(P, 1);
+
+			// 4. 计算新分子 P_new(x)，根据 k 的奇偶性选择不同的计算路径（优化掉一半的 FFT）
+			if (k & 1) {
+				// CASE: k 是奇数
+				// 公式：P_new(x) = P_o(x)Q_e(x) - P_e(x)Q_o(x)
+				poly Po_Qe = poly_mul(Po, Qe);
+				poly Pe_Qo = poly_mul(Pe, Qo);
+
+				int deg_P_new = max(Po_Qe.size(), Pe_Qo.size());
+				P.resize(deg_P_new);
+				for(int i = 0; i < deg_P_new; ++ i) {
+					int t1 = (i < (int)Po_Qe.size()) ? Po_Qe[i] : 0;
+					int t2 = (i < (int)Pe_Qo.size()) ? Pe_Qo[i] : 0;
+					P[i] = minus(t1, t2);
+				}
+			} else {
+				// CASE: k 是偶数
+				// 公式：P_new(x) = P_e(x)Q_e(x) - x P_o(x)Q_o(x)
+				poly Pe_Qe = poly_mul(Pe, Qe);
+				poly Po_Qo = poly_mul(Po, Qo);
+
+				int deg_P_new = max(Pe_Qe.size(), Po_Qo.size() + 1);
+				P.resize(deg_P_new);
+				for(int i = 0; i < deg_P_new; ++ i) {
+					int t1 = (i < (int)Pe_Qe.size()) ? Pe_Qe[i] : 0;
+					// 注意：x * (PoQo) 意味着系数移动一位，取 i-1
+					int t2 = (i > 0 && i - 1 < (int)Po_Qo.size()) ? Po_Qo[i - 1] : 0;
+					P[i] = minus(t1, t2);
+				}
+			}
+
+			// 5. 迭代 k
+			k >>= 1;
+
+			// 6. 去除高位无用的 0，减小下一轮 NTT 的长度
+			while(P.size() > 1 && P.back() == 0) P.pop_back();
+			while(Q.size() > 1 && Q.back() == 0) Q.pop_back();
+		}
+
+		// k=0 时，答案是常数项之商 P(0)/Q(0)
+		// 注意 Q[0] 必须存在。如果 Q[0]=0，且 P[0]!=0 则无解；若都是 0 则需洛必达（一般题目保证 Q[0]!=0）
+		return 1ll * P[0] * qpow(Q[0], mod - 2) % mod;
+	}
 }
+
+vector<int> berlekamp_massey(const vector<int> &a) {
+  vector<int> v, last;  // v is the answer, 0-based, p is the module
+  int k = -1, delta = 0;
+
+  for (int i = 0; i < (int)a.size(); i++) {
+    int tmp = 0;
+    for (int j = 0; j < (int)v.size(); j++)
+      tmp = (tmp + (long long)a[i - j - 1] * v[j]) % p;
+
+    if (a[i] == tmp) continue;
+
+    if (k < 0) {
+      k = i;
+      delta = (a[i] - tmp + p) % p;
+      v = vector<int>(i + 1);
+
+      continue;
+    }
+
+    vector<int> u = v;
+    int val = (long long)(a[i] - tmp + p) * qpow(delta, p - 2) % p;
+
+    if (v.size() < last.size() + i - k) v.resize(last.size() + i - k);
+
+    (v[i - k - 1] += val) %= p;
+
+    for (int j = 0; j < (int)last.size(); j++) {
+      v[i - k + j] = (v[i - k + j] - (long long)val * last[j]) % p;
+      if (v[i - k + j] < 0) v[i - k + j] += p;
+    }
+
+    if ((int)u.size() - i < (int)last.size() - k) {
+      last = u;
+      k = i;
+      delta = a[i] - tmp;
+      if (delta < 0) delta += p;
+    }
+  }
+
+  for (auto &x : v) x = (p - x) % p;
+  vector<int> t(1,1);
+  for (int i=0;i<(int)v.size();i++) t.push_back(v[i]);
+
+  return t;  // $\forall i, \sum_{j = 0} ^ m a_{i - j} v_j = 0$
+}
+
+//bm-bm algo:
+//1. compute array a with bruteforce
+//2. call bm algo to obtain v
+//3. reverse v
+//4. then a[k] = x^k mod v \dot a
 
 using Poly::poly;
 using Poly::poly_arcsin;

@@ -1,28 +1,47 @@
-#include "bits/stdc++.h"
-//include problem files
-
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include<iostream>
 
 using namespace std;
 
-#define fastio ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
-#define double long double
+int main()
+{
+	std::mutex mtx;
+	condition_variable c;
+	int n = 100;
+	bool flag = true;
 
-typedef long long ll;
-typedef unsigned long long ull;
+	thread t1([&]() {
+		int i = 0;
+		while (i < n)
+		{
+			unique_lock<mutex> lock(mtx);
+			while (!flag)
+				c.wait(lock);
+			cout << i << endl;
+			flag = false;
+			i += 2; // 偶数
+			c.notify_one();
+		}
+		});
 
-typedef pair<int,int> ii;
-typedef pair<ii,ii> iiii;
-typedef pair<ll,int> li;
-typedef pair<int,ii> iii;
-typedef pair<ii,int> iii2;
-typedef pair<ll,ll> pll;
-typedef pair<int,ll> il;
+	thread t2([&]() {
+		int j = 1;
+		while (j < n)
+		{
+			unique_lock<mutex> lock(mtx);
+			while (flag)
+				c.wait(lock);
+			cout << j << endl;
+			j += 2; // 奇数
+			flag = true;
+			c.notify_one();
+		}
+		});
 
-ll mod = 1000000007;
 
-const ll large = 2000000000000000000LL;
-const int int_large = 1e9;
-
-//begin
-
-
+	t1.join();
+	t2.join();
+	return 0;
+}
