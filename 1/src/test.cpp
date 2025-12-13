@@ -34,6 +34,7 @@ void __prepare(){
 
 // begin----------------------------------------------------------------
 
+
 const int N = 5000007;
 const int bN = 23;
 const int p = 998244353, gg = 3, ig = 332738118, img = 86583718;
@@ -480,6 +481,9 @@ namespace Poly
 		return P;
 	}
 
+	// -----------------------------------------------------------
+	// Bostan–Mori 算法辅助函数
+	// -----------------------------------------------------------
 
 	// 多项式抽取：type=0 偶数次项系数, type=1 奇数次项系数
 	poly poly_extract(const poly &f, int type) {
@@ -562,9 +566,49 @@ namespace Poly
 		// 注意 Q[0] 必须存在。如果 Q[0]=0，且 P[0]!=0 则无解；若都是 0 则需洛必达（一般题目保证 Q[0]!=0）
 		return 1ll * P[0] * qpow(Q[0], mod - 2) % mod;
 	}
+
+	// -----------------------------------------------------------
+	// 求线性递推数列第 k 项
+	// -----------------------------------------------------------
+	// c: 递推系数 [c_1, c_2, ..., c_m] ( a_n = c_1*a_{n-1} + ... )
+	// a: 初值 [a_0, a_1, ..., a_{m-1}]
+	// k: 要求的项数下标 (从 0 开始)
+	int linear_recurrence(vector<int> c, vector<int> a, long long k) {
+		int m = c.size(); // 递推阶数
+
+		// 1. 构造分母 Q(x) = 1 - c_1 x - c_2 x^2 ...
+		poly Q(m + 1);
+		Q[0] = 1;
+		for (int i = 0; i < m; ++ i) {
+			// 注意符号：是减去系数
+			Q[i + 1] = minus(0, c[i]);
+		}
+
+		// 2. 构造分子 P(x) = A(x)Q(x) mod x^m
+		// A(x) 是初值构成的多项式
+		poly A = a; // A 的度数是 m-1
+
+		// 我们只需要前 m 项，所以乘法后 resize 即可
+		// 实际上 P 的次数最高为 m-1
+		poly P = poly_mul(A, Q);
+		if (P.size() > m) P.resize(m);
+
+		// 3. 调用 Bostan-Mori
+		return bostan_mori(P, Q, k);
+	}
 }
 
 void solve(){
+	Poly::init(21);
+
+	int n,k;
+	cin>>n>>k;
+	vector<int> a(n,0),c(n,0);
+	for(int i=0;i<n;i++) cin>>a[i];
+	for(int i=0;i<n;i++) cin>>c[i];
+
+	cout<<Poly::linear_recurrence(c,a,k)<<endl;
+
 
 
 }
