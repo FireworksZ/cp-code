@@ -1,7 +1,8 @@
 //#pragma GCC optimize(2)
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 using namespace std;
 typedef long long ll;
+
 
 const int N = 5000007;
 const int bN = 23;
@@ -87,17 +88,23 @@ namespace Poly
         }
     }
 
-    poly poly_mul(poly A, poly B) {//多项式乘法
+    poly poly_mul(const poly &A, const poly &B) {
+        // 内部逻辑不变，但因为是引用，不能直接 resize A 或 B
+        // 你需要创建新的临时变量
         int deg = A.size() + B.size() - 1;
         int limit = NTT_init(deg);
-        poly C(limit);
-        NTT(A, 1, limit);
-        NTT(B, 1, limit);
+
+        poly FA(A.begin(), A.end()); FA.resize(limit); // 显式拷贝并 resize
+        poly FB(B.begin(), B.end()); FB.resize(limit);
+
+        NTT(FA, 1, limit);
+        NTT(FB, 1, limit);
+        poly FC(limit);
         for(int i = 0; i < limit; ++ i)
-            C[i] = 1ll * A[i] * B[i] % mod;
-        NTT(C, 0, limit);
-        C.resize(deg);
-        return C;
+            FC[i] = 1ll * FA[i] * FB[i] % mod;
+        NTT(FC, 0, limit);
+        FC.resize(deg);
+        return FC;
     }
 
     poly poly_inv(poly &f, int deg) {//多项式求逆
@@ -563,6 +570,252 @@ namespace Poly
 
 		// 3. 调用 Bostan-Mori
 		return bostan_mori(P, Q, k);
+	}
+
+	// --- 辅助多项式复合
+	// --- 请添加到 Poly 命名空间的变量声明部分 ---
+	int fac[N], ifac[N];
+
+	// --- 请更新 init 函数，或者添加这个辅助函数 ---
+	void init_fac(int n) {
+		fac[0] = 1;
+		for (int i = 1; i <= n; ++i) fac[i] = 1ll * fac[i - 1] * i % mod;
+		ifac[n] = qpow(fac[n], mod - 2);
+		for (int i = n - 1; i >= 0; --i) ifac[i] = 1ll * ifac[i + 1] * (i + 1) % mod;
+	}
+
+	// -----------------------------------------------------------
+	// 多项式复合辅助函数：泰勒平移 f(x + c)
+	// -----------------------------------------------------------
+	// 原理：f(x + c) = sum ( f[i] * i! * c^(i-j) / (i-j)! * x^j / j! )
+	// 这是一个卷积形式
+	poly poly_shift(poly f, int c) {
+		int n = f.size();
+		// 记得调用 init_fac 预处理阶乘！
+		// 如果 c = 0，直接返回
+		if (c == 0) return f;
+
+		poly A(n), B(n);
+		// 构造 A[i] = f[i] * i!
+		for (int i = 0; i < n; ++i)
+			A[i] = 1ll * f[i] * fac[i] % mod;
+
+		// 构造 B[i] = c^i / i!
+		// 注意：卷积是从大到小匹配，所以我们要翻转 A，
+		// 或者构造卷积形式：sum A[j+k] * B[k]
+		// 这里采用翻转 A 的方式：
+		// [x^j] Result = (1/j!) * sum_{i=j}^n (f[i]*i!) * (c^(i-j)/(i-j)!)
+		// 令 A'[n-1-i] = f[i]*i!, B[k] = c^k/k!
+		// 卷积后取相关项
+
+		reverse(A.begin(), A.end());
+
+		int pc = 1;
+		for (int i = 0; i < n; ++i) {
+			B[i] = 1ll * pc * ifac[i] % mod;
+			pc = 1ll * pc * c % mod;
+		}
+
+		poly Res = poly_mul(A, B); // 卷积
+		Res.resize(n); // 只需要前 n 项（实际上是卷积结果的高位部分）
+		reverse(Res.begin(), Res.end()); // 翻转回来
+
+		// 最后乘上 1/j!
+		for (int i = 0; i < n; ++i)
+			Res[i] = 1ll * Res[i] * ifac[i] % mod;
+
+		return Res;
+	}
+
+	// -----------------------------------------------------------
+	// 多项式复合 (优化版 O(N log^2 N))
+	// -----------------------------------------------------------
+
+	// 辅助：限制长度的乘法，避免不必要的 FFT 计算
+	poly poly_mul_len(const poly &A, const poly &B, int limit) {
+		if (A.empty() || B.empty() || limit <= 0) return {};
+		// 截断输入，只取有效部分
+		poly FA(A.begin(), A.begin() + min((int)A.size(), limit));
+		poly FB(B.begin(), B.begin() + min((int)B.size(), limit));
+
+		poly res = poly_mul(FA, FB);
+		if (res.size() > limit) res.resize(limit);
+		return res;
+	}
+
+	// 分治核心
+	// f: 当前层级的系数
+	// h_powers: 预处理好的 H 的幂次 H^1, H^2, H^4... (其中 H = G/x)
+	// k: 当前层级 (对应 shift = 2^k)
+	// limit_deg: 目标模数次数
+	poly solve_comp_opt(const poly &f, const vector<poly> &h_powers, int k, int limit_deg) {
+		if (f.size() <= 1) return f;
+
+		int n = f.size();
+		int mid = n >> 1;
+
+		// 1. 分割 f 为左半部分和右半部分
+		poly f_left(f.begin(), f.begin() + mid);
+		poly f_right(f.begin() + mid, f.end());
+
+		// 2. 递归求解
+		poly res_left = solve_comp_opt(f_left, h_powers, k - 1, limit_deg);
+
+		// 关键优化：右半部分不仅要递归，还要乘上 G^mid
+		// G^mid = x^mid * H^mid
+		// 所以我们只需要计算 mod (limit_deg - mid)
+		int shift = 1 << (k - 1); // 当前层的 mid 跨度，即 2^(k-1)
+
+		if (shift >= limit_deg) {
+			// 如果移位超过限制，右半部分贡献为 0，直接返回左半部分
+			return res_left;
+		}
+
+		poly res_right = solve_comp_opt(f_right, h_powers, k - 1, limit_deg - shift);
+
+		// 3. 合并：res = res_left + (res_right * H^mid) << mid
+		// 取出 H^mid (在 h_powers[k-1] 中)
+		poly H_pow = h_powers[k - 1];
+
+		// 计算乘积，注意长度限制减少了 shift
+		poly term_right = poly_mul_len(res_right, H_pow, limit_deg - shift);
+
+		// 加法合并
+		if (res_left.size() < limit_deg) res_left.resize(limit_deg);
+
+		for (int i = 0; i < term_right.size(); ++i) {
+			if (i + shift < limit_deg) {
+				res_left[i + shift] = plus(res_left[i + shift], term_right[i]);
+			}
+		}
+
+		return res_left;
+	}
+
+	// 主函数
+	poly poly_comp(poly f, poly g, int n) {
+		f.resize(n);
+		g.resize(n);
+
+		// 处理 g[0] != 0 的情况 (泰勒平移)
+		if (g.size() > 0 && g[0] != 0) {
+			 // 必须确保已调用 init_fac()
+			f = poly_shift(f, g[0]);
+			g[0] = 0;
+		}
+
+		// 将 f 补齐到 2 的幂次，方便分治
+		int m = 1;
+		while (m < n) m <<= 1;
+		f.resize(m, 0);
+
+		// 构造 H(x) = G(x) / x
+		poly h = g;
+		if (h.size() > 0) h.erase(h.begin()); // 移除常数项 0
+		else h = {0};
+
+		// 预处理 H 的幂次：H^1, H^2, H^4...
+		// 此时 H 的长度只需要 n
+		int log_m = 0;
+		while ((1 << log_m) < m) log_m++;
+
+		vector<poly> h_powers(log_m);
+		if (log_m > 0) {
+			h_powers[0] = h; // H^1
+			if (h_powers[0].size() > n) h_powers[0].resize(n);
+
+			for (int i = 1; i < log_m; ++i) {
+				h_powers[i] = poly_mul_len(h_powers[i - 1], h_powers[i - 1], n);
+			}
+		}
+
+		poly res = solve_comp_opt(f, h_powers, log_m, n);
+		res.resize(n);
+		return res;
+	}
+
+	// -----------------------------------------------------------
+	// 多项式复合逆 (极速优化版)
+	// -----------------------------------------------------------
+	// 复杂度：O(N log^2 N)，但常数极小
+	poly poly_inv_comp(poly F, int n) {
+		// 1. 基础校验
+		if (F.empty() || F[0] != 0) return {};
+		if (F.size() > 1 && F[1] == 0) return {};
+
+		// 2. 初始状态：G(x) = x / F'(0) mod x^2
+		poly G(2);
+		G[0] = 0;
+		int inv_f1 = qpow(F[1], mod - 2);
+		G[1] = inv_f1;
+
+		// 3. 倍增迭代
+		// len: 当前已求出的解的有效长度
+		int len = 2;
+		while (len < n) {
+			// 目标长度 limit = 2 * len
+			int limit = len << 1;
+
+			// --- 步骤 A: 准备 F ---
+			// F 只需要截取到 limit，超过 limit 的项对模 limit 的结果无影响
+			poly F_cut = F;
+			if (F_cut.size() > limit) F_cut.resize(limit);
+
+			// G_cur 用于代入，resize 到 limit (后面补0)
+			poly G_cur = G;
+			if (G_cur.size() < limit) G_cur.resize(limit);
+
+			// --- 步骤 B: 计算复合 A = F(G(x)) mod x^limit ---
+			// 这是全算法最耗时的一步 O(len log^2 len)
+			poly A = poly_comp(F_cut, G_cur, limit);
+
+			// --- 步骤 C: 计算分母 (F(G))' 的逆 ---
+			// [关键优化 1]：分母只需要计算模 x^len 的逆！
+			// 因为分子 (A-x) 最低位是 x^len，所以分母高位不影响结果的 mod x^limit
+			poly A_dev = poly_dev(A);
+			if (A_dev.size() > len) A_dev.resize(len); // 强制截断到 len
+
+			poly den_inv = poly_inv(A_dev, len); // 只做 len 长求逆，速度快一倍
+
+			// --- 步骤 D: 计算分子 (F(G) - x) * G' ---
+
+			// 1. 计算残差 R = A - x
+			// 我们知道前 len 项肯定是 0 (或是非常接近 0 的极小误差)，
+			// 实际上我们只需要 A 的 [len, limit) 部分
+			if (A.size() > 1) A[1] = minus(A[1], 1);
+			else { A.resize(2, 0); A[1] = minus(0, 1); }
+
+			// 2. 计算 G'
+			// [关键优化 2]：G' 也只需要前 len 项参与计算 delta 的高位
+			poly G_dev = poly_dev(G_cur);
+			if (G_dev.size() > len) G_dev.resize(len);
+
+			// 3. 分子 num = (A-x) * G'
+			// 注意：A-x 的前 len 项理论上是 0。
+			// 为了利用这一点，我们可以手动 slice 或者直接乘。
+			// 直接乘比较安全，但我们可以限制结果长度。
+			poly num = poly_mul(A, G_dev);
+			// 我们只需要 num 的 [len, limit) 部分，但 poly_mul 算出了 [0, 2*len)
+			// 这里的低位部分应该是 0
+
+			// --- 步骤 E: 计算增量 Delta 并更新 ---
+			// Delta = num * den_inv
+			// 同样，我们只需要 Delta 的 [len, limit) 部分
+			// 这一步乘法可以用类似分治乘法的逻辑优化，但直接乘也行，主要是 den_inv 变短了
+			poly delta = poly_mul(num, den_inv);
+
+			// 更新 G = G - delta
+			G.resize(limit);
+			for (int i = len; i < limit; ++i) { // 只需要更新 [len, limit) 部分
+				int d_val = (i < delta.size()) ? delta[i] : 0;
+				G[i] = minus(G[i], d_val);
+			}
+
+			len <<= 1;
+		}
+
+		G.resize(n);
+		return G;
 	}
 }
 
