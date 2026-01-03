@@ -32,10 +32,25 @@ int qpow(int a, ll b)
 
 namespace Poly
 {
-    #define mul(x, y) (1ll * x * y >= mod ? 1ll * x * y % mod : 1ll * x * y)
-    #define minus(x, y) (1ll * x - y < 0 ? 1ll * x - y + mod : 1ll * x - y)
-    #define plus(x, y) (1ll * x + y >= mod ? 1ll * x + y - mod : 1ll * x + y)
-    #define ck(x) (x >= mod ? x - mod : x)//取模运算太慢了
+	// #define mul(x, y) (1ll * x * y >= mod ? 1ll * x * y % mod : 1ll * x * y)
+    inline int mul(int x, int y) {
+        return 1ll * x * y >= mod ? 1ll * x * y % mod : 1ll * x * y;
+    }
+
+    // #define minus(x, y) (1ll * x - y < 0 ? 1ll * x - y + mod : 1ll * x - y)
+    inline int minus(int x, int y) {
+        return x - y < 0 ? x - y + mod : x - y;
+    }
+
+    // #define plus(x, y) (1ll * x + y >= mod ? 1ll * x + y - mod : 1ll * x + y)
+    inline int plus(int x, int y) {
+        return x + y >= mod ? x + y - mod : x + y;
+    }
+
+    // #define ck(x) (x >= mod ? x - mod : x)
+    inline int ck(int x) {
+        return x >= mod ? x - mod : x;
+    }
 
     typedef vector<int> poly;
     const int G = 3;//根据具体的模数而定，原根可不一定不一样！！！
@@ -112,6 +127,7 @@ namespace Poly
             return poly(1, qpow(f[0], mod - 2));
 
         poly A(f.begin(), f.begin() + deg);
+        A.resize(deg,0);
         poly B = poly_inv(f, (deg + 1) >> 1);
         int limit = NTT_init(deg << 1);
         NTT(A, 1, limit), NTT(B, 1, limit);
@@ -817,52 +833,321 @@ namespace Poly
 		G.resize(n);
 		return G;
 	}
-}
 
-vector<int> berlekamp_massey(const vector<int> &a) {
-  vector<int> v, last;  // v is the answer, 0-based, p is the module
-  int k = -1, delta = 0;
+	// -----------------------------------------------------------
+	// Berlekamp-Massey 算法
+	// -----------------------------------------------------------
+	// 输入: 数列的前若干项 val
+	// 输出: 最短线性递推式的特征多项式 C(x) (连接多项式)
+	// C(x) = 1 - c_1 x - c_2 x^2 ... - c_m x^m
+	// 满足: \forall i >= m, \sum_{j=0}^m C_j * val_{i-j} = 0 (其中 C_0 = 1)
+	poly berlekamp_massey(const vector<int> &val) {
+		poly C, oldC;
+		C.push_back(1);
+		oldC.push_back(1);
 
-  for (int i = 0; i < (int)a.size(); i++) {
-    int tmp = 0;
-    for (int j = 0; j < (int)v.size(); j++)
-      tmp = (tmp + (long long)a[i - j - 1] * v[j]) % p;
+		int fail_pos = -1; // 上一次失配的位置
+		int val_in_fail = 0; // 上一次失配时的计算差值 (delta)
 
-    if (a[i] == tmp) continue;
+		for (int i = 0; i < (int)val.size(); ++i) {
+			// 1. 计算当前差值 delta
+			// delta = val[i] + \sum_{j=1}^{C.size()-1} C[j] * val[i-j]
+			// 注意：这里 C 的定义包含 C[0]=1，且公式为 \sum C_j * val_{i-j} = 0
+			// 所以 delta = \sum_{j=0}^{C.size()-1} C[j] * val[i-j]
+			int delta = 0;
+			for (int j = 0; j < (int)C.size(); ++j) {
+				delta = (delta + 1ll * C[j] * val[i - j]) % mod;
+			}
 
-    if (k < 0) {
-      k = i;
-      delta = (a[i] - tmp + p) % p;
-      v = vector<int>(i + 1);
+			if (delta == 0) continue; // 匹配成功，无需更新
 
-      continue;
-    }
+			// 2. 匹配失败，需要修正 C
+			// fail_pos 是上一次出错的位置 k
+			// val_in_fail 是上一次的 delta_k
+			// 构造因子 mul = -delta / delta_k
+			int mul = 1ll * (mod - delta) * qpow(val_in_fail, mod - 2) % mod;
 
-    vector<int> u = v;
-    int val = (long long)(a[i] - tmp + p) * qpow(delta, p - 2) % p;
+			// 构造新多项式 D(x) = C(x) + mul * x^{i - fail_pos} * oldC(x)
+			// 因为我们要 copy C 到 newC，并在 newC 上叠加
+			poly curC = C;
+			int offset = i - fail_pos;
 
-    if (v.size() < last.size() + i - k) v.resize(last.size() + i - k);
+			// 动态扩展 curC 大小
+			if (curC.size() < oldC.size() + offset)
+				curC.resize(oldC.size() + offset);
 
-    (v[i - k - 1] += val) %= p;
+			for (int j = 0; j < (int)oldC.size(); ++j) {
+				curC[j + offset] = (curC[j + offset] + 1ll * mul * oldC[j]) % mod;
+			}
 
-    for (int j = 0; j < (int)last.size(); j++) {
-      v[i - k + j] = (v[i - k + j] - (long long)val * last[j]) % p;
-      if (v[i - k + j] < 0) v[i - k + j] += p;
-    }
+			// 3. 更新 oldC 和 fail_pos
+			// 如果 C 的长度增加了，通常意味着找到了更优的解，需要更新 fallback 信息
+			if (C.size() < curC.size()) {
+				oldC = C;
+				fail_pos = i;
+				val_in_fail = delta;
+			}
 
-    if ((int)u.size() - i < (int)last.size() - k) {
-      last = u;
-      k = i;
-      delta = a[i] - tmp;
-      if (delta < 0) delta += p;
-    }
-  }
+			C = curC;
+		}
+		return C;
+	}
 
-  for (auto &x : v) x = (p - x) % p;
-  vector<int> t(1,1);
-  for (int i=0;i<(int)v.size();i++) t.push_back(v[i]);
+	// -----------------------------------------------------------
+	// 线性递推数列第 k 项 (自动推导版)
+	// -----------------------------------------------------------
+	// 输入: 数列的前若干项 raw_seq, 要求的项数 k
+	// 逻辑:
+	// 1. 运行 BM 算法得到分母 Q(x)
+	// 2. 构造分子 P(x) = A(x)Q(x) mod x^m
+	// 3. 运行 Bostan-Mori
+	int kth_term_linear(const vector<int> &raw_seq, long long k) {
+		if (raw_seq.empty()) return 0;
+		if (k < (int)raw_seq.size()) return raw_seq[k];
 
-  return t;  // $\forall i, \sum_{j = 0} ^ m a_{i - j} v_j = 0$
+		// 1. BM 求连接多项式 Q (即分母)
+		// 注意：BM 返回的 C 实际上就是 Bostan-Mori 需要的分母 Q
+		// Q = 1 - c_1 x - c_2 x^2 ...
+		poly Q = berlekamp_massey(raw_seq);
+
+		// 2. 构造分子 P
+		// P = F * Q (保留前 m 项，m = Q.size() - 1)
+		// F 是初始序列生成函数 F(x) = \sum a_i x^i
+		// 我们只需要 Q 的度数这么多项即可计算 P
+		int m = Q.size() - 1;
+		// 如果 Q 只有常数项 1 (即序列全为0)，直接返回 0
+		if (m == 0) return 0;
+
+		poly A(raw_seq.begin(), raw_seq.begin() + min((int)raw_seq.size(), m));
+		poly P = poly_mul(A, Q);
+		if (P.size() > m) P.resize(m);
+
+		// 3. Bostan-Mori
+		return bostan_mori(P, Q, k);
+	}
+
+	// -----------------------------------------------------------
+	// 二维多项式乘法
+	// -----------------------------------------------------------
+
+	typedef vector<vector<int>> poly2d;
+
+	// 辅助函数：矩阵转置
+	// 将 R x C 的矩阵转置为 C x R
+	void matrix_transpose(poly2d &Mat, int R, int C) {
+		poly2d T(C, poly(R));
+		for (int i = 0; i < R; ++i) {
+			for (int j = 0; j < C; ++j) {
+				// 注意：NTT 过程中可能会 resize，所以要确保访问安全
+				// 在本流程中，调用此函数时矩阵已经是满的 R*C 大小
+				T[j][i] = Mat[i][j];
+			}
+		}
+		Mat = move(T);
+	}
+
+	poly2d poly_mul_2d(const poly2d &A, const poly2d &B) {
+		if (A.empty() || B.empty() || A[0].empty() || B[0].empty()) return {};
+
+		int nA = A.size(), mA = A[0].size();
+		int nB = B.size(), mB = B[0].size();
+
+		// 结果矩阵的实际大小
+		int finalN = nA + nB - 1;
+		int finalM = mA + mB - 1;
+
+		// 计算 NTT 需要的 2 的幂次长度
+		// 注意：NTT_init 会修改全局的 RR 数组，所以每次切换维度处理前都要重新调用
+		int limN = NTT_init(finalN);
+		int limM = NTT_init(finalM);
+
+		// 初始化容器，大小预设为 limN (行数)
+		poly2d FA(limN), FB(limN);
+
+		// 复制数据
+		for (int i = 0; i < nA; ++i) FA[i] = A[i];
+		for (int i = 0; i < nB; ++i) FB[i] = B[i];
+		// 剩下的行 (nA ~ limN-1) 默认为空 vector，会在接下来的 NTT 中被自动 resize 补 0
+
+		// ==========================================
+		// 步骤 1: 对每一行做 NTT (变换 y 轴方向)
+		// ==========================================
+		NTT_init(finalM); // 初始化 RR 数组用于长度 limM
+		for (int i = 0; i < limN; ++i) {
+			NTT(FA[i], 1, limM); // NTT 内部会自动 resize 到 limM
+			NTT(FB[i], 1, limM);
+		}
+
+		// ==========================================
+		// 步骤 2: 对每一列做 NTT (变换 x 轴方向)
+		// ==========================================
+		// 为了利用现有的 1D NTT 且优化缓存，我们进行转置
+		// 转置后：FA 变为 limM 行, limN 列
+		matrix_transpose(FA, limN, limM);
+		matrix_transpose(FB, limN, limM);
+
+		NTT_init(finalN); // 初始化 RR 数组用于长度 limN
+		for (int i = 0; i < limM; ++i) {
+			NTT(FA[i], 1, limN);
+			NTT(FB[i], 1, limN);
+		}
+
+		// ==========================================
+		// 步骤 3: 点值相乘
+		// ==========================================
+		// 此时矩阵大小为 limM * limN (因为转置过)
+		for (int i = 0; i < limM; ++i) {
+			for (int j = 0; j < limN; ++j) {
+				FA[i][j] = 1ll * FA[i][j] * FB[i][j] % mod;
+			}
+		}
+
+		// ==========================================
+		// 步骤 4: 对每一列做 INTT (x 轴逆变换)
+		// ==========================================
+		// 当前维度仍是 limN，无需再次 NTT_init
+		for (int i = 0; i < limM; ++i) {
+			NTT(FA[i], 0, limN);
+		}
+
+		// ==========================================
+		// 步骤 5: 转置回来
+		// ==========================================
+		// 变回 limN 行, limM 列
+		matrix_transpose(FA, limM, limN);
+
+		// ==========================================
+		// 步骤 6: 对每一行做 INTT (y 轴逆变换)
+		// ==========================================
+		NTT_init(finalM); // 切换回 limM 的 RR 数组
+		for (int i = 0; i < limN; ++i) {
+			NTT(FA[i], 0, limM);
+		}
+
+		// ==========================================
+		// 步骤 7: 截断到实际大小
+		// ==========================================
+		FA.resize(finalN);
+		for (int i = 0; i < finalN; ++i) {
+			FA[i].resize(finalM);
+		}
+
+		return FA;
+	}
+
+	// -----------------------------------------------------------
+	// Power Projection
+	// -----------------------------------------------------------
+	// 求解 h_i = [x^n] f(x)^i g(x) for i=0...n
+	// 假设 [x^0]f(x) = 0
+	// 复杂度: O(N log^2 N)
+	poly power_projection(poly f, poly g, int n = -1) {
+		if (n == -1) n = f.size() - 1;
+
+		// P(x, y) = g(x) (y 的 0 次项)
+		// Q(x, y) = 1 - y * f(x)
+
+		// 初始状态:
+		// P 的 x 次数为 n, y 次数为 1
+		// Q 的 x 次数为 n, y 次数为 2
+
+		vector<poly> P(n + 1, poly(1));
+		vector<poly> Q(n + 1, poly(2));
+
+		for (int i = 0; i <= n; ++i) {
+			if (i < (int)g.size()) P[i][0] = g[i];
+			else P[i][0] = 0;
+		}
+
+		// Q = 1 - y * f(x)
+		// [x^0]Q = 1 (因为 [x^0]f=0，所以常数项只由 1 提供)
+		// [x^i]Q = -f[i] * y
+		Q[0][0] = 1; Q[0][1] = (f.size() > 0 ? minus(0, f[0]) : 0);
+		for (int i = 1; i <= n; ++i) {
+			Q[i][0] = 0;
+			Q[i][1] = (i < (int)f.size()) ? minus(0, f[i]) : 0;
+		}
+
+		int cur_n = n; // 当前 x 的度数
+		int cur_k = 1; // 当前 y 的度数 (2^step)
+
+		while (cur_n > 0) {
+			// 1. 构造 R(x, y) = Q(-x, y)
+			// 也就是将 Q 中 x 的奇次项系数取反
+			vector<poly> R = Q;
+			for (int i = 1; i <= cur_n; i += 2) {
+				for (auto &val : R[i]) val = minus(0, val);
+			}
+
+			// 2. 二元卷积
+			// S = P * R
+			// T = Q * R = Q(x)Q(-x) = V(x^2)
+			vector<poly> S = poly_mul_2d(P, R);
+			vector<poly> T = poly_mul_2d(Q, R);
+
+			// 3. 提取系数，缩小 x 次数，倍增 y 次数
+			// New P: 取 S 中 x 的奇偶项 (取决于 n 的奇偶性)
+			// New Q: 取 T 中 x 的偶数项
+
+			int next_n = cur_n / 2;
+			int next_k = cur_k * 2;
+
+			vector<poly> next_P(next_n + 1);
+			vector<poly> next_Q(next_n + 1);
+
+			// 目标 y 长度大约是 next_k + 1 (或者稍微多一点，因为卷积扩张了)
+			// 我们只需要保留前 next_k + 1 项即可吗？
+			// 实际上 y 的次数会翻倍，我们需要保留足够的 y 精度。
+			// 理论上只需要 mod y^(n+1) 精度，但这里 n 指的是最初的 n。
+			// 在这一步，我们保留 next_k * 2 左右的安全长度。
+
+			int parity = cur_n % 2;
+			for (int i = 0; i <= next_n; ++i) {
+				// P' = [x^{2i+parity}] S
+				if (2 * i + parity < (int)S.size()) {
+					next_P[i] = S[2 * i + parity];
+				} else {
+					next_P[i] = {0};
+				}
+
+				// Q' = [x^{2i}] T
+				if (2 * i < (int)T.size()) {
+					next_Q[i] = T[2 * i];
+				} else {
+					next_Q[i] = {0};
+				}
+
+				// 裁剪 y 的大小以保证复杂度 (重要!)
+				// 实际上下一轮需要的 y 精度是 next_k + 1
+				// 卷积后 y 的大小变成了 ~2*cur_k，这就是 next_k
+				if ((int)next_P[i].size() > next_k + 1) next_P[i].resize(next_k + 1);
+				if ((int)next_Q[i].size() > next_k + 1) next_Q[i].resize(next_k + 1);
+			}
+
+			P = next_P;
+			Q = next_Q;
+			cur_n /= 2;
+			cur_k *= 2;
+		}
+
+		// 最终 P[0] 和 Q[0] 都是关于 y 的多项式
+		// 答案是 P[0](y) / Q[0](y) mod y^(n+1)
+		poly final_P = P[0];
+		poly final_Q = Q[0];
+
+		// 这里的 n 是最初传入的 n
+		int target_deg = n + 1;
+		if ((int)final_P.size() > target_deg) final_P.resize(target_deg);
+		if ((int)final_Q.size() > target_deg) final_Q.resize(target_deg);
+
+		poly inv_Q = poly_inv(final_Q, target_deg);
+		poly ans = poly_mul(final_P, inv_Q);
+		ans.resize(target_deg);
+
+		return ans;
+	}
+
+
 }
 
 //bm-bm algo:
