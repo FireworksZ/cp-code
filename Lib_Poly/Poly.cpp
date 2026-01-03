@@ -1038,11 +1038,12 @@ namespace Poly
 	// -----------------------------------------------------------
 	// Power Projection
 	// -----------------------------------------------------------
-	// 求解 h_i = [x^n] f(x)^i g(x) for i=0...n
+	// 求解 h_i = [x^n] f(x)^i g(x) for i=0...ny
 	// 假设 [x^0]f(x) = 0
 	// 复杂度: O(N log^2 N)
-	poly power_projection(poly f, poly g, int n = -1) {
+	poly power_projection(poly f, poly g, int n = -1, int ny = -1) {
 		if (n == -1) n = f.size() - 1;
+		if (ny == -1) ny = n;
 
 		// P(x, y) = g(x) (y 的 0 次项)
 		// Q(x, y) = 1 - y * f(x)
@@ -1131,12 +1132,11 @@ namespace Poly
 		}
 
 		// 最终 P[0] 和 Q[0] 都是关于 y 的多项式
-		// 答案是 P[0](y) / Q[0](y) mod y^(n+1)
+		// 答案是 P[0](y) / Q[0](y) mod y^(ny+1)
 		poly final_P = P[0];
 		poly final_Q = Q[0];
 
-		// 这里的 n 是最初传入的 n
-		int target_deg = n + 1;
+		int target_deg = ny + 1;
 		if ((int)final_P.size() > target_deg) final_P.resize(target_deg);
 		if ((int)final_Q.size() > target_deg) final_Q.resize(target_deg);
 
