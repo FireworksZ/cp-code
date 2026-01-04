@@ -123,11 +123,13 @@ namespace Poly
     }
 
     poly poly_inv(poly &f, int deg) {//多项式求逆
-        if(deg == 1)
-            return poly(1, qpow(f[0], mod - 2));
+    		if (f.empty()) return {}; // ✅ 防止空向量访问 f[0]
+    	    if (deg == 1)
+    	        return poly(1, qpow(f[0], mod - 2));
 
-        poly A(f.begin(), f.begin() + deg);
-        A.resize(deg,0);
+        int len = min((int)f.size(), deg);
+        poly A(f.begin(), f.begin() + len);
+        A.resize(deg, 0);
         poly B = poly_inv(f, (deg + 1) >> 1);
         int limit = NTT_init(deg << 1);
         NTT(A, 1, limit), NTT(B, 1, limit);
@@ -162,9 +164,10 @@ namespace Poly
         poly B = poly_exp(f, (deg + 1) >> 1);
         B.resize(deg);
         poly lnB = poly_ln(B, deg);
-        for(int i = 0; i < deg; ++ i)
-            lnB[i] = ck(f[i] - lnB[i] + mod);
-
+        for(int i = 0; i < deg; ++ i) {
+			int fi = (i < (int)f.size()) ? f[i] : 0; // 安全获取 f[i]
+			lnB[i] = ck(fi - lnB[i] + mod);
+		}
         int limit = NTT_init(deg << 1);//n -> n^2
         NTT(B, 1, limit), NTT(lnB, 1, limit);
         for(int i = 0; i < limit; ++ i)
@@ -175,8 +178,11 @@ namespace Poly
     }
 
     poly poly_sqrt(poly &f, int deg) {//多项式开方
+    		assert(f.size()&&f[0]==1);
         if(deg == 1) return poly(1, 1);
-        poly A(f.begin(), f.begin() + deg);
+        int len = min((int)f.size(), deg);
+		poly A(f.begin(), f.begin() + len);
+		A.resize(deg, 0);
         poly B = poly_sqrt(f, (deg + 1) >> 1);
         poly IB = poly_inv(B, deg);
         int limit = NTT_init(deg << 1);
@@ -191,6 +197,7 @@ namespace Poly
     }
 
     poly poly_pow(poly f, int k) {//多项式快速幂
+    		assert(f.size()&&f[0]==1);
         f = poly_ln(f, f.size());
         for(auto &x : f) x = 1ll * x * k % mod;
         return poly_exp(f, f.size());
@@ -255,7 +262,9 @@ namespace Poly
 	}
 
     poly poly_cos(poly f, int deg) {//多项式三角函数（cos）
-        poly A(f.begin(), f.begin() + deg);
+    		int len = min((int)f.size(), deg);
+    	    poly A(f.begin(), f.begin() + len);
+    	    A.resize(deg, 0);
         poly B(deg), C(deg);
         for(int i = 0; i < deg; ++ i)
             A[i] = 1ll * A[i] * img % mod;
@@ -269,7 +278,9 @@ namespace Poly
     }
 
     poly poly_sin(poly f, int deg) {//多项式三角函数（sin）
-        poly A(f.begin(), f.begin() + deg);
+    		int len = min((int)f.size(), deg);
+    	    poly A(f.begin(), f.begin() + len);
+    	    A.resize(deg, 0);
         poly B(deg), C(deg);
         for(int i = 0; i < deg; ++ i)
             A[i] = 1ll * A[i] * img % mod;
@@ -286,6 +297,7 @@ namespace Poly
         poly A(f.size()), B(f.size()), C(f.size());
         A = poly_dev(f);
         B = poly_mul(f, f);
+        if ((int)B.size() < deg) B.resize(deg, 0); // 确保 B 至少有 deg 那么长
         for(int i = 0; i < deg; ++ i)
             B[i] = minus(mod, B[i]);
         B[0] = plus(B[0], 1);
@@ -300,6 +312,7 @@ namespace Poly
         poly A(f.size()), B(f.size()), C(f.size());
         A = poly_dev(f);
         B = poly_mul(f, f);
+        if ((int)B.size() < deg) B.resize(deg, 0);
         B[0] = plus(B[0], 1);
         C = poly_inv(B, deg);
         C = poly_mul(A, C);
