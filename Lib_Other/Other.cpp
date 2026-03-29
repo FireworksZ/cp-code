@@ -1,4 +1,4 @@
-#include<iostream>
+#include "bits/stdc++.h"
 
 using namespace std;
 
@@ -77,5 +77,8 @@ ostream &operator<<(ostream &os, __int128 x) {
 }
 
 int main(){
+	// random number generator
+	mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+	unsigned long long r = rng();
 
 }
