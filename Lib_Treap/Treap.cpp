@@ -24,6 +24,8 @@
 #include<list>
 #include<sstream>
 #include<cassert>   // assert
+#include<random>
+#include<chrono>
 
 using namespace std;
 //#define double long double
@@ -40,7 +42,9 @@ long long mod = 1000000007LL;
 long long base = 10000007;
 long long large = 1000000000000000000LL;
 
-
+// 32-bit RNG seeded from a clock; replaces rand() which is only 15 bits on MSVC,
+// causing frequent priority collisions and Treap depth degrading toward O(N).
+mt19937 treap_rng((unsigned)chrono::steady_clock::now().time_since_epoch().count());
 
 
 struct Treap{
@@ -50,7 +54,7 @@ struct Treap{
     Treap(int key)
     {
         size=1;
-        fix=rand();
+        fix=(int)treap_rng();
         this->key=key;
         ch[0]=ch[1]=NULL;
     }
