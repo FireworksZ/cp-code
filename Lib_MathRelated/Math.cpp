@@ -13,11 +13,18 @@
 #include<cmath>
 #include<bitset>
 #include<map>
+#include<random>
+#include<chrono>
 using namespace std;
 
 int mod = 998244353;
 
 typedef long long ll;
+
+// 64-bit RNG seeded from a clock; rand() returns only 15 bits on MSVC (and 31 elsewhere),
+// so rand()<<32 + rand() gives at most ~30-62 random bits depending on platform — not
+// strong enough for 64-bit Miller-Rabin witnesses or Pollard rho jumps.
+mt19937_64 mr_rng((unsigned long long)chrono::steady_clock::now().time_since_epoch().count());
 
 struct mint {
 	int x;
@@ -172,7 +179,7 @@ llui pollard ( llui n){
 			a = m; b = n; d = gcd ();
 		}
 		if(d != n) return d;
-		iteracoes ++; C = rand ();
+		iteracoes ++; C = mr_rng (); // upgraded from rand() — same 15-bit MSVC issue
 	}
 	return 1;
 }
@@ -186,15 +193,14 @@ llui pot ( llui a, llui b, llui c){
 }
 // Rabin - Miller primality testing algorithm
 bool isPrime ( llui n){
+	if (n < 2) return false;            // 0 and 1 are not prime
+	if (n <= 3 || n == 5) return true;
+	if (!(n &1) ) return false ;
 	llui d = n -1;
 	llui s = 0;
-	if(n <=3 || n == 5) return true ;
-	if (!(n &1) ) return false ;
 	while (!(d &1) ){ s ++; d>>=1; }
 	for ( llui i = 0;i <32; i++){
-		llui a = rand ();
-		a<<=32;
-		a+= rand ();
+		llui a = mr_rng();
 		a %=(n -3) ; a +=2;
 		llui x = pot (a,d,n);
 		if(x == 1 || x == n -1) continue ;
