@@ -248,12 +248,11 @@ struct LCT{
 		splay(x);
 		int y = childs[x][0];
 		if(y!=-1){
+			// after access+splay, parent[x] is already -1; detach left subtree y
 			type[y] = 2;
 			parent[y] = -1;
 			childs[x][0] = -1;
 			update(x);
-			parent[y] = parent[x];
-			parent[x] = -1;
 		}
 	}
 	void mroot(int x){
