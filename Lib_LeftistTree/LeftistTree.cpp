@@ -62,6 +62,7 @@ struct LeftistHeap{
 	}
 
 	int init(int x){
+		assert(tot < (int)v.size()); // exceeded sz passed to LeftistHeap(sz)
 		v[tot] = x;
 		l[tot] = r[tot] = -1;
 		d[tot] = 0;

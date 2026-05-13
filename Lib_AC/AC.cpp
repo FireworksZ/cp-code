@@ -12,6 +12,7 @@
 #include<string>
 #include<cstring>
 #include<queue>
+#include<cassert>
 using namespace std;
 
 class AC {
@@ -34,6 +35,7 @@ public:
 		for(int i=0;i<n;i++){
 			int c=idx(s[i]);
 			if(ch[u][c]==-1){
+				assert(sz < (int)ch.size()); // exceeded maxnode passed to ctor/assign
 				val[sz]=0;
 				ch[u][c]=sz++;
 			}

@@ -89,6 +89,7 @@ struct SuffixTree{
 		if (st.pos == 0)
 			return t[st.v].par;
 		node v = t[st.v];
+		assert(sz < (int)t.size()); // exceeded 2*n nodes allocated in init()
 		int id = sz++;
 		t[id] = node (v.l, v.l+st.pos, v.par);
 		t[v.par].get( s[v.l] ) = id;
@@ -114,6 +115,7 @@ struct SuffixTree{
 			}
 
 			int mid = split (ptr);
+			assert(sz < (int)t.size());
 			int leaf = sz++;
 			t[leaf] = node (pos, n, mid);
 			t[mid].get( s[pos] ) = leaf;

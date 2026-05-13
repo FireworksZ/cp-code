@@ -9,6 +9,7 @@
 #include<cstdio>
 #include<vector>
 #include<algorithm>
+#include<cassert>
 
 using namespace std;
 class Heap{
@@ -48,6 +49,7 @@ public:
 		}
 	}
 	void push(int v){
+		assert(p < (int)h.size()); // exceeded n+10 slots allocated in ctor/assign
 		h[p]=v;
 		balanceup(p);
 		p++;

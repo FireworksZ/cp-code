@@ -10,6 +10,7 @@
 #include<vector>
 #include<algorithm>
 #include<queue>
+#include<cassert>
 
 using namespace std;
 
@@ -35,6 +36,7 @@ struct Dinic {
 		n=maxn;
 	}
 	void addEdge(int from,int to,long long cap){
+		assert(from < (int)G.size() && to < (int)G.size()); // node id beyond maxn+10
 		edges.push_back((Edge){from,to,cap,0});
 		edges.push_back((Edge){to,from,0,0});
 		m=edges.size();

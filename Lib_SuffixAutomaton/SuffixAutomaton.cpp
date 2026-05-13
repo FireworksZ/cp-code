@@ -61,6 +61,7 @@ struct SuffixAutomaton{
 
 	}
 	void extend (char c) {
+		assert(sz < (int)st.size()); // extending past 2*n states allocated in init()
 		int cur = sz++;
 		st[cur].len = st[last].len + 1;
 		st[cur].is_clone = false;
@@ -74,6 +75,7 @@ struct SuffixAutomaton{
 			if (st[p].len + 1 == st[q].len)
 				st[cur].link = q;
 			else {
+				assert(sz < (int)st.size());
 				int clone = sz++;
 				st[clone].len = st[p].len + 1;
 				st[clone].next = st[q].next;
