@@ -78,8 +78,10 @@ struct MCBM{
 		for(int j=0;j<(int)adj[u].size();j++){
 			int v = adj[u][j];
 			if(!vis[v]&&dis[v]==dis[u]+1){
-				vis[v] = 1;
+				// matched right vertex at the deepest layer cannot be on any augmenting
+				// path this phase — skip before marking visited to make intent clear
 				if(link[v]!=-1&&dis[v]==dist) continue;
+				vis[v] = 1;
 				if(link[v]==-1||find(link[v])){
 					link[u] = v;
 					link[v] = u;
