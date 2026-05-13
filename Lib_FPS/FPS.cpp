@@ -306,7 +306,7 @@ namespace FPS
         B = fps_mul(f, f);
         if ((int)B.size() < len) B.resize(len, 0); // 确保 B 至少有 len 那么长
         for(int i = 0; i < len; ++ i)
-            B[i] = minus(mod, B[i]);
+            B[i] = minus(0, B[i]);
         B[0] = plus(B[0], 1);
         C = fps_sqrt(B, len);
         C = fps_inv(C, len);
@@ -339,8 +339,8 @@ namespace FPS
 		if (l == r) {
 			// 叶子节点: M[i](x) = x - x[l]
 			M[i].resize(2);
-			M[i][0] = minus(mod, x[l]); // -x[l]
-			M[i][1] = 1;                 // x
+			M[i][0] = minus(0, x[l]); // -x[l]
+			M[i][1] = 1;               // x
 			return;
 		}
 
@@ -764,8 +764,7 @@ namespace FPS
 	// 复杂度：O(N log^2 N)，但常数极小
 	fps fps_inv_comp(fps F, int n) {
 		// 1. 基础校验
-		if (F.empty() || F[0] != 0) return {};
-		if (F.size() > 1 && F[1] == 0) return {};
+		if (F.size() < 2 || F[0] != 0 || F[1] == 0) return {};
 
 		// 2. 初始状态：G(x) = x / F'(0) mod x^2
 		fps G(2);
