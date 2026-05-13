@@ -4,6 +4,10 @@
 .settings/
 .metadata/
 
+# Per-folder .gitignore files Eclipse auto-generates (top-level one is kept)
+**/.gitignore
+!/.gitignore
+
 # Build artifacts
 Debug/
 Release/
