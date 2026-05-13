@@ -70,7 +70,8 @@ struct Euler_Path{
 		}
 		reverse(e.begin(),e.end());
 		for(int i=0;i<(int)e.size();i++) cout<<e[i].first+1<<" ";
-		cout<<e[0].first+1<<endl;
+		// final vertex of the path (equals e[0].first for a circuit, but differs for an open Eulerian path)
+		if(!e.empty()) cout<<e.back().second+1<<endl;
 	}
 
 };

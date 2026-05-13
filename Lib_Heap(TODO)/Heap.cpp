@@ -66,7 +66,8 @@ public:
 		p--;
 		swap(h[pos],h[p]);
 		h[p]=1000000000;
-		balancedown(pos);
+		balanceup(pos);   // swapped-in value may be smaller than parent
+		balancedown(pos); // ... or larger than children; only one will do real work
 	}
 	bool empty(){
 		return p==1;

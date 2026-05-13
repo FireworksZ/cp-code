@@ -34,7 +34,7 @@ struct MCMF {
 		G.assign(n+10,vector<int>(0));
 		edges.clear();
 		inq.assign(n+10,0);
-		dis.assign(n+10,1000000000);
+		dis.assign(n+10,large);
 		p.assign(n+10,0);
 		a.assign(n+10,0);
 	}
@@ -75,6 +75,7 @@ struct MCMF {
 		}
 		if(dis[t]==large) return false;
 		flow+=a[t];
+		// cost can overflow long long if max_path_cost * max_flow > ~9e18; switch to __int128 if needed
 		cost+=dis[t]*a[t];
 		int u=t;
 		vector<int> pa;
@@ -140,9 +141,10 @@ struct MCMF {
 	}
 	void clearflow(){
 		inq.assign(n+10,0);
-		dis.assign(n+10,1000000000);
+		dis.assign(n+10,large);
 		p.assign(n+10,0);
 		a.assign(n+10,0);
+		path.clear(); // previously persisted across runs
 		for(int i=0;i<(int)edges.size();i++){
 			edges[i].flow=0;
 		}

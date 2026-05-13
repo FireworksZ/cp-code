@@ -43,6 +43,9 @@ struct PalindromeTree{
 	int suf;
 
 	void init(){
+		// reset state so init() is safe to call between test cases
+		t.clear();
+		s.clear();
 		//odd root 0, even root 1
 		node a;
 		a.len = -1;

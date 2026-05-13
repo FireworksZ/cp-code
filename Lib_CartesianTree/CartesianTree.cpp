@@ -48,6 +48,7 @@ struct node {
 } tree[N];
 
 int cartesian_build(int n) {  // 建树，满足小根堆性质
+  tree[0].init(0, -INF, 0); // sentinel: smaller than any input so climb terminates
   for (int i = 1; i <= n; i++) {
     int k = i - 1;
     while (tree[k].val > tree[i].val) k = tree[k].par;

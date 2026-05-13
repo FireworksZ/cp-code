@@ -49,9 +49,11 @@ public:
 		return true;
 	}
 	void clear(){
+		// reset state but preserve allocated capacity so insert() remains valid;
+		// use assign(x,y) if you want to resize.
 		sz=1;
-		ch.clear();
-		val.clear();
+		for(auto &row : ch) fill(row.begin(), row.end(), -1);
+		fill(val.begin(), val.end(), 0);
 	}
 	void assign(int x,int y){
 		sz=1;

@@ -58,7 +58,7 @@ struct LeftistHeap{
 		if(l[x]==-1||(r[x]!=-1&&d[l[x]]<d[r[x]])){
 			swap(l[x],r[x]);
 		}
-		d[x] = d[r[x]]+1;
+		d[x] = (r[x]==-1) ? 0 : d[r[x]]+1; // d of empty subtree is -1, so x = 0
 		return x;
 	}
 

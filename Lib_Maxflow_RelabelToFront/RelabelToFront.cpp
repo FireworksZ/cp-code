@@ -36,8 +36,9 @@ long long large = 2000000000000000000LL;
 
 
 struct Edge {
-	int from,to,cap,flow;
-	Edge (int from,int to,int cap,int flow):from(from),to(to),cap(cap),flow(flow){}
+	int from,to;
+	long long cap,flow;
+	Edge (int from,int to,long long cap,long long flow):from(from),to(to),cap(cap),flow(flow){}
 };
 
 
@@ -46,7 +47,7 @@ struct Relabel_To_Front{
 	vector<Edge> edges;
 	vector<vector<int> > G;
 	vector<int> h;
-	vector<int> excess;
+	vector<long long> excess;
 
 	void init(int maxn){
 		n = maxn;
@@ -56,7 +57,7 @@ struct Relabel_To_Front{
 		excess.assign(n,0);
 	}
 
-	void addEdge(int from,int to,int cap){
+	void addEdge(int from,int to,long long cap){
 		edges.push_back(Edge(from,to,cap,0));
 		edges.push_back(Edge(to,from,0,0));
 		int m = (int)edges.size();
@@ -67,7 +68,7 @@ struct Relabel_To_Front{
 	void push(int edgeid){
 		int u = edges[edgeid].from;
 		int v = edges[edgeid].to;
-		int delta = min(excess[u],edges[edgeid].cap-edges[edgeid].flow);
+		long long delta = min(excess[u],edges[edgeid].cap-edges[edgeid].flow);
 		edges[edgeid].flow+=delta;
 		edges[edgeid^1].flow-=delta;
 		excess[u]-=delta;
@@ -119,7 +120,7 @@ struct Relabel_To_Front{
 		}
 	}
 
-	int maxflow(int st,int en){
+	long long maxflow(int st,int en){
 		s = st;
 		t = en;
 
@@ -161,7 +162,7 @@ int main(){
 	}
 
 
-	int f = rtf.maxflow(s,t);
+	long long f = rtf.maxflow(s,t);
 	int cnt = 0 ;
 	for(int i=0;i<(int)rtf.edges.size();i+=2){
 		Edge e = rtf.edges[i];

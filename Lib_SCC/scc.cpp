@@ -1,7 +1,7 @@
 /*
  * scc.cpp
  *
- *  Created on: 2016Äê8ÔÂ3ÈÕ
+ *  Created on: 2016ï¿½ï¿½8ï¿½ï¿½3ï¿½ï¿½
  *      Author: Administrator
  */
 
@@ -61,6 +61,8 @@ int main(){
 	dfs_num.assign(n,-1);
 	dfs_low.assign(n,0);
 	visited.assign(n,0);
+	Scc.clear(); S.clear();
+	dfsNumberCounter = 0; numSCC = 0;
 	for(int i=0;i<n;i++){
 		if(dfs_num[i]==-1){
 			tarjanSCC(i);

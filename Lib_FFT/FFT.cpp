@@ -55,6 +55,7 @@ void FFT(vector<CD> &a, bool inverse) {
 // 用FFT实现的快速多项式乘法
 vector<double> operator * (const vector<double>& v1, const vector<double>& v2) {
   int s1 = v1.size(), s2 = v2.size(), S = 2;
+  if(s1 == 0 || s2 == 0) return {}; // avoid s1+s2-1 underflow below
   while(S < s1 + s2) S <<= 1;
   vector<CD> a(S,0), b(S,0); // 把FFT的输入长度补成2的幂，不小于v1和v2的长度之和
   for(int i = 0; i < s1; i++) a[i] = v1[i];

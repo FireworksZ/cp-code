@@ -19,6 +19,13 @@ vector<vector<int> > sum;
 int v;
 int n;
 
+// must be called before any update/query; sizes the 2D segment tree storage to a
+// row-tree of 4*n x col-tree of 4*n. n here is the coordinate range, not the node count.
+void init_seg2d(int _n){
+	n = _n;
+	sum.assign(4*n, vector<int>(4*n, 0));
+}
+
 void updatey(int o1,int o2,int yl,int yr){
 	if(yl==yr){
 		sum[o1][o2]+=v;

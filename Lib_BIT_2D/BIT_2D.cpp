@@ -1,7 +1,7 @@
 /*
  * BIT_2D.cpp
  *
- *  Created on: 2016Äê8ÔÂ10ÈÕ
+ *  Created on: 2016ï¿½ï¿½8ï¿½ï¿½10ï¿½ï¿½
  *      Author: Administrator
  */
 #include<iostream>
@@ -19,7 +19,13 @@ public:
 
 	vector<vector<long long> > tree;
 
+    // must be called before any update/query; index is 1-based, so allocate rows+1 / cols+1.
+    void init(int rows,int cols){
+        tree.assign(rows+1, vector<long long>(cols+1, 0));
+    }
+
     void update(int x,int y,int vl){
+        if(x<=0||y<=0) return; // index is 1-based; x or y == 0 would infinite-loop
         while(x<(int)tree.size()){
             int yy=y;
             while(yy<(int)tree[x].size()){

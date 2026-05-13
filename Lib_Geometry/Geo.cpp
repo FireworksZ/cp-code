@@ -1,7 +1,7 @@
 /*
  * Geo.cpp
  *
- *  Created on: 2016Äê1ÔÂ3ÈÕ
+ *  Created on: 2016ï¿½ï¿½1ï¿½ï¿½3ï¿½ï¿½
  *      Author: Administrator
  */
 
@@ -216,7 +216,7 @@ struct Triangle{
 		CC=angle(A-C,B-C);
 	}
 	double getAngle(double x,double y,double z){
-		return acos((x*x-z*z+y*y)/2*x*y);
+		return acos((x*x-z*z+y*y)/(2*x*y));
 	}
 	bool init(double ta,double tb,double tc){
 		if(ta>tb) swap(ta,tb);
@@ -448,26 +448,26 @@ double getArea(vector<Vector> p){
 	}
 	return sum;
 }
-// ·µ»Øµã¼¯Ö±¾¶
+// ï¿½ï¿½ï¿½Øµã¼¯Ö±ï¿½ï¿½
 double getDiameter(vector<Vector> points) {
   vector<Vector> p;
   getConvexHull(points,p);
   int n = p.size();
   if(n == 1) return 0;
   if(n == 2) return length(p[1]-p[0]);
-  p.push_back(p[0]); // ÃâµÃÈ¡Ä£
+  p.push_back(p[0]); // ï¿½ï¿½ï¿½È¡Ä£
   double ans = 0;
   for(int u = 0, v = 1; u < n; u++) {
-    // Ò»ÌõÖ±ÏßÌù×¡±ßp[u]-p[u+1]
+    // Ò»ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½×¡ï¿½ï¿½p[u]-p[u+1]
     for(;;) {
-      // µ±Area(p[u], p[u+1], p[v+1]) <= Area(p[u], p[u+1], p[v])Ê±Í£Ö¹Ðý×ª
-      // ¼´Cross(p[u+1]-p[u], p[v+1]-p[u]) - Cross(p[u+1]-p[u], p[v]-p[u]) <= 0
-      // ¸ù¾ÝCross(A,B) - Cross(A,C) = Cross(A,B-C)
-      // »¯¼òµÃCross(p[u+1]-p[u], p[v+1]-p[v]) <= 0
+      // ï¿½ï¿½Area(p[u], p[u+1], p[v+1]) <= Area(p[u], p[u+1], p[v])Ê±Í£Ö¹ï¿½ï¿½×ª
+      // ï¿½ï¿½Cross(p[u+1]-p[u], p[v+1]-p[u]) - Cross(p[u+1]-p[u], p[v]-p[u]) <= 0
+      // ï¿½ï¿½ï¿½ï¿½Cross(A,B) - Cross(A,C) = Cross(A,B-C)
+      // ï¿½ï¿½ï¿½ï¿½ï¿½Cross(p[u+1]-p[u], p[v+1]-p[v]) <= 0
       double diff = cross(p[u+1]-p[u], p[v+1]-p[v]);
       if(dcmp(diff) <= 0) {
-        ans = max(ans,length(p[u]-p[v])); // uºÍvÊÇ¶Ôõàµã
-        if(dcmp(diff) == 0) ans = max(ans,length(p[u]-p[v+1])); // diff == 0Ê±uºÍv+1Ò²ÊÇ¶Ôõàµã
+        ans = max(ans,length(p[u]-p[v])); // uï¿½ï¿½vï¿½Ç¶ï¿½ï¿½ï¿½ï¿½
+        if(dcmp(diff) == 0) ans = max(ans,length(p[u]-p[v+1])); // diff == 0Ê±uï¿½ï¿½v+1Ò²ï¿½Ç¶ï¿½ï¿½ï¿½ï¿½
         break;
       }
       v = (v + 1) % n;

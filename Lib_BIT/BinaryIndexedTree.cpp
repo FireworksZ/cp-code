@@ -32,6 +32,7 @@ public:
 		return rsq(b)-(a==1?0:rsq(a-1));
 	}
 	void adjust(long long k,long long v){
+		if(k<=0) return; // index is 1-based; k==0 would infinite-loop
 		for(;k<(long long)ft.size();k+=LSOne(k)) ft[k]+=v;
 	}
 };

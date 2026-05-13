@@ -1,7 +1,7 @@
 /*
  * SplayTree.cpp
  *
- *  Created on: 2018Äê1ÔÂ5ÈÕ
+ *  Created on: 2018ï¿½ï¿½1ï¿½ï¿½5ï¿½ï¿½
  *      Author: Administrator
  */
 
@@ -46,7 +46,9 @@ struct SplayTree{
 	int nodeCnt;
 	int root;
 
-	int type[SZ],parent[SZ],size[SZ],stack[SZ],reversed[SZ],childs[SZ][2];
+	// static arrays so the struct itself stays small enough to put on the stack;
+	// shared across all SplayTree instances â€” assumes a single live instance.
+	static int type[SZ],parent[SZ],size[SZ],stack[SZ],reversed[SZ],childs[SZ][2];
 
 	void init(int n){
 		root = -1;
@@ -226,6 +228,14 @@ struct SplayTree{
 		dfs(childs[u][1]);
 	}
 };
+
+// definitions for the static storage declared inside SplayTree
+int SplayTree::type[SZ];
+int SplayTree::parent[SZ];
+int SplayTree::size[SZ];
+int SplayTree::stack[SZ];
+int SplayTree::reversed[SZ];
+int SplayTree::childs[SZ][2];
 
 //HDU1890 solution with splay tree
 

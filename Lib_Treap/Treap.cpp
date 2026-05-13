@@ -71,7 +71,7 @@ void Rotate(Treap* &t,int d){
     Treap *k=t->ch[d^1];
     t->ch[d^1]=k->ch[d];
     k->ch[d]=t;
-    t->Maintain();  //±ØĞëÏÈÎ¬»¤t£¬ÔÙÎ¬»¤k£¬ÒòÎª´ËÊ±tÊÇkµÄ×Ó½Úµã
+    t->Maintain();  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½tï¿½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½kï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ê±tï¿½ï¿½kï¿½ï¿½ï¿½Ó½Úµï¿½
     k->Maintain();
     t=k;
 }
@@ -83,8 +83,8 @@ void Insert(Treap* &t,int x){
     if(t==NULL) t=new Treap(x);
     else
     {
-        //int d=t->compare(x);   //Èç¹ûÖµÏàµÈµÄÔªËØÖ»²åÈëÒ»¸ö
-        int d=x < t->key ? 0:1;  //Èç¹ûÖµÏàµÈµÄÔªËØ¶¼²åÈë
+        //int d=t->compare(x);   //ï¿½ï¿½ï¿½Öµï¿½ï¿½Èµï¿½Ôªï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+        int d=x < t->key ? 0:1;  //ï¿½ï¿½ï¿½Öµï¿½ï¿½Èµï¿½Ôªï¿½Ø¶ï¿½ï¿½ï¿½ï¿½ï¿½
         Insert(t->ch[d],x);
         if(t->ch[d]->fix > t->fix)
             Rotate(t,d^1);
@@ -92,7 +92,7 @@ void Insert(Treap* &t,int x){
     t->Maintain();
 }
 
-//Ò»°ãÀ´Ëµ£¬ÔÚµ÷ÓÃÉ¾³ıº¯ÊıÖ®Ç°ÒªÏÈÓÃFind()º¯ÊıÅĞ¶Ï¸ÃÔªËØÊÇ·ñ´æÔÚ
+//Ò»ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö®Ç°Òªï¿½ï¿½ï¿½ï¿½Find()ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¶Ï¸ï¿½Ôªï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
 void Delete(Treap* &t,int x){
 	if(t==NULL) return ;
     int d=t->compare(x);
@@ -147,6 +147,7 @@ int Kth(Treap *t,int k){
 }
 
 int Rank(Treap *t,int x){
+    if(t==NULL) return 0; // x not in tree
     int r;
     if(t->ch[0]==NULL) r=0;
     else  r=t->ch[0]->size;

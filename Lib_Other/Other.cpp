@@ -64,16 +64,16 @@ istream &operator>>(istream &is, __int128 &x) {
 }
 
 ostream &operator<<(ostream &os, __int128 x) {
-	if (x < 0) return os << "-" << (-x);
-	else if (x == 0) return os << "0";
-	else {
-		string s = "";
-		while (x > 0) {
-			s = static_cast<char>('0' + x % 10) + s;
-			x /= 10;
-		}
-		return os << s;
+	if (x == 0) return os << "0";
+	bool neg = x < 0;
+	__uint128_t ux = neg ? -(__uint128_t)x : (__uint128_t)x; // safe at INT128_MIN
+	string s = "";
+	while (ux > 0) {
+		s = static_cast<char>('0' + ux % 10) + s;
+		ux /= 10;
 	}
+	if (neg) s = "-" + s;
+	return os << s;
 }
 
 int main(){

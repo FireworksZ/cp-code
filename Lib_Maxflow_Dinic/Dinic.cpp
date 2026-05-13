@@ -15,7 +15,8 @@ using namespace std;
 
 
 struct Edge {
-	int from,to,cap,flow;
+	int from,to;
+	long long cap,flow;
 };
 
 struct Dinic {
@@ -33,7 +34,7 @@ struct Dinic {
 		cur.assign(maxn+10,0);
 		n=maxn;
 	}
-	void addEdge(int from,int to,int cap){
+	void addEdge(int from,int to,long long cap){
 		edges.push_back((Edge){from,to,cap,0});
 		edges.push_back((Edge){to,from,0,0});
 		m=edges.size();
@@ -60,9 +61,9 @@ struct Dinic {
 		}
 		return vis[t];
 	}
-	int DFS(int x,int a){
+	long long DFS(int x,long long a){
 		if(x==t||a==0) return a;
-		int flow=0,f;
+		long long flow=0,f;
 		for(int& i=cur[x];i<(int)G[x].size();i++){
 			Edge& e=edges[G[x][i]];
 			if(dis[x]+1==dis[e.to]&&(f=DFS(e.to,min(a,e.cap-e.flow)))>0){
@@ -75,13 +76,13 @@ struct Dinic {
 		}
 		return flow;
 	}
-	int maxflow(int s,int t){
+	long long maxflow(int s,int t){
 		this->s=s;
 		this->t=t;
-		int flow=0;
+		long long flow=0;
 		while(BFS()){
 			cur.assign(n+10,0);
-			flow+=DFS(s,1000000000);
+			flow+=DFS(s,(long long)1e18);
 		}
 		return flow;
 	}

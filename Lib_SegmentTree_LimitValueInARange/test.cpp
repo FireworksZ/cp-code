@@ -118,10 +118,10 @@ void update(int o,int l,int r){
 
 int ql,qr;
 long long re;
-void query(int o,int l,int r,int val){
+void query(int o,int l,int r,long long val){
 	if(ql<=l&&qr>=r){
 		re+=sum[o];
-		if(label[o]==-1) re+=1LL*val*cnt[o];
+		if(label[o]==-1) re+=val*cnt[o];
 	}else{
 		int m = (l+r)/2;
 		if(label[o]!=-1) val = label[o];
@@ -130,9 +130,9 @@ void query(int o,int l,int r,int val){
 	}
 }
 
-void querym(int o,int l,int r,int val){
+void querym(int o,int l,int r,long long val){
 	if(ql<=l&&qr>=r){
-		if(label[o] == -1) re = max(re,1LL*val);
+		if(label[o] == -1) re = max(re,val);
 		else re = max(re,1LL*label[o]);
 	}else{
 		int m = (l+r)/2;

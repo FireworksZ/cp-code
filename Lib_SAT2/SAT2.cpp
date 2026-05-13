@@ -70,6 +70,8 @@ struct SAT2{
 		dfs_num.assign(n,-1);
 		dfs_low.assign(n,0);
 		visited.assign(n,0);
+		Scc.clear(); S.clear();
+		dfsNumberCounter = 0; numSCC = 0;
 		for(int i=0;i<n;i++){
 			if(dfs_num[i]==-1){
 				tarjanSCC(i);

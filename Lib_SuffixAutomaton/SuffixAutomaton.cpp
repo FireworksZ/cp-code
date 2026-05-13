@@ -41,8 +41,8 @@ long long large = 1000000000000000000LL;
 
 struct SuffixAutomaton{
 	struct state {
-		int len, link;
-		bool is_clone;
+		int len = 0, link = -1;
+		bool is_clone = false;
 		map<char,int> next;
 		//vector<int> inv_link;
 
@@ -53,7 +53,7 @@ struct SuffixAutomaton{
 	int n;
 	void init(int nn) {
 		n = nn;
-		st.assign(2*n,state());
+		st.assign(max(2,2*n),state()); // always allocate the initial state even when n==0
 		sz = last = 0;
 		st[0].len = 0;
 		st[0].link = -1;

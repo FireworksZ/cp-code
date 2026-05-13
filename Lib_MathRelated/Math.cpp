@@ -76,15 +76,15 @@ void gcdE(long long a,long long b,long long& d,long long& x,long long& y){
 long long inv(long long a,long long n){
 	long long d,x,y;
 	gcdE(a,n,d,x,y);
-	return d==1?(x+n)%n:-1;
+	return d==1?((x%n)+n)%n:-1; // x can be larger in magnitude than n
 }
 
-//fast inv
-void get_inv(long long n){
-	vector<long long> inv;
-	long long mod = 1000000007LL;
-	inv[0] = inv[1] = 1;
-	for(long long i=2;i<n;i++) inv[i]=1ll*(mod-mod/i)*inv[mod%i]%mod;
+//fast inv table mod a prime p
+vector<long long> get_inv(long long n, long long p = 1000000007LL){
+	vector<long long> inv(n);
+	if(n > 1) inv[1] = 1;
+	for(long long i=2;i<n;i++) inv[i]=(p-p/i)*inv[p%i]%p;
+	return inv;
 }
 
 
@@ -110,9 +110,7 @@ int euler_phi(int n){
 //phi_table
 vector<int> phi;
 void phi_table(int n){
-	for(int i=2;i<=n;i++){
-		phi[i]=0;
-	}
+	phi.assign(n+1, 0);
 	phi[1]=1;
 	for(int i=2;i<=n;i++){
 		if(!phi[i]){
@@ -231,7 +229,7 @@ void fact ( llui n){
 //calculate integral
 //define F as global function with other parameters as global variable
 double F(double x){
-
+	return 0; // override this; default is the zero function
 }
 //simpson way
 double simpson(double a,double b){
@@ -255,15 +253,17 @@ double asr(double a,double b,double eps){
 
 
 long long china(vector<long long> a,vector<long long> m){
-	long long M=1,d,y,x=0;
+	long long M=1,x=0;
 	int n=(int)a.size();
 	for(int i=0;i<n;i++){
 		M*=m[i];
 	}
 	for(int i=0;i<n;i++){
 		long long w=M/m[i];
-		gcdE(1LL*m[i],w,d,d,y);
-		x=(x+y*w*a[i])%M;
+		long long g, xx, yy;
+		gcdE(1LL*m[i], w, g, xx, yy); // separate variables — previously d was aliased as both g and x
+		// yy is the inverse of w mod m[i] (assuming gcd==1); mod-multiply to avoid overflow when M is large
+		x = (x + (yy * w % M) * (a[i] % M) % M + M) % M;
 	}
 	return (x+M)%M;
 }
