@@ -2,7 +2,6 @@
 
 using namespace std;
 
-#define double long double
 
 string test = "\"C:/Data/cpp-workspace/cp-code/1/Debug/1.exe\"";
 string solution = "\"C:/Data/cpp-workspace/cp-code/1_Solution/Debug/1_Solution.exe\"";

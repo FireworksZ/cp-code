@@ -2,7 +2,6 @@
 
 using namespace std;
 
-#define double long double
 
 template <typename T>
 struct hungarian    // km

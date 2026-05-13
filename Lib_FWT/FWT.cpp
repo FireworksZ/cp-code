@@ -28,7 +28,6 @@
 
 using namespace std;
 
-#define double long double
 
 typedef pair<int,int> ii;
 typedef pair<int,long long> il;
