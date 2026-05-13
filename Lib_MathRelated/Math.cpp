@@ -226,6 +226,14 @@ void fact ( llui n){
 	}
 }
 
+// safe wrapper for fact(): clears the global before recursing so callers don't
+// have to remember the precondition.
+map<llui,int> factorize(llui n){
+	factors.clear();
+	fact(n);
+	return factors;
+}
+
 //calculate integral
 //define F as global function with other parameters as global variable
 double F(double x){

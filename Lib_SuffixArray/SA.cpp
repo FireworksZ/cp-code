@@ -38,6 +38,8 @@ void countingSort(int k){
 }
 
 void constructSA(){
+	// ra/tempra/sa/tempsa/c are all reset here, so calling constructSA() between
+	// testcases is safe as long as `t` and `n` are reassigned first
 	ra.assign(max(400,n+10),0);
 	tempra=sa=tempsa=c=ra;//vector initialize
 	int i,k,r;

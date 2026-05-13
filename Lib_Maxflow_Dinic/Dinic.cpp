@@ -43,6 +43,9 @@ struct Dinic {
 	}
 	bool BFS() {
 		vis.assign(n+10,false);
+		// clear dis to a sentinel so DFS's dis[x]+1==dis[e.to] can't match stale values
+		// from a previous phase for nodes that BFS doesn't reach
+		dis.assign(n+10,-1);
 		queue<int> q;
 		q.push(s);
 		dis[s]=0;

@@ -18,6 +18,16 @@ vector<int> pa;// record the parent node
 vector<ii> pos;//pos[i].first is the chain that node i belong to, pos[i].second is the position of node i in the chain
 vector<int> dp;//to calculate the size of subtree
 
+// call before f()/hld() to clear cross-testcase state and seed chain 0
+// (adj is left to the caller — fill it with edges before calling hld)
+void init_hld(int n){
+	chains.clear();
+	chains.push_back(vector<int>()); // chain 0 — hld(root, 0, -1) pushes the root onto this
+	pa.assign(n, -1);
+	pos.assign(n, ii(-1, -1));
+	dp.assign(n, 0);
+}
+
 int f(int u,int parent){
 	int ans = 0;
 	for(int j=0;j<(int)adj[u].size();j++){
