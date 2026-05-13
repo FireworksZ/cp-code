@@ -1,0 +1,27 @@
+# Eclipse CDT / workspace
+.cproject
+.project
+.settings/
+.metadata/
+
+# Build artifacts
+Debug/
+Release/
+*.o
+*.d
+*.obj
+*.exe
+*.exe.stackdump
+*.stackdump
+
+# Competitive programming I/O
+input.txt
+output.txt
+result.txt
+judge_out.txt
+user_out.txt
+
+# OS / editor junk
+Desktop.ini
+Thumbs.db
+.DS_Store

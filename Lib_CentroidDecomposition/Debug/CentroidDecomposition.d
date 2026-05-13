@@ -1,1 +1,0 @@
-CentroidDecomposition.o: ../CentroidDecomposition.cpp
